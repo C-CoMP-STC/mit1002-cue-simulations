@@ -1,0 +1,6 @@
+name: cue-simulations
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+prefix: /Users/helenscott/opt/miniconda3/envs/cue-simulations
