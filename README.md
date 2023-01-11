@@ -5,7 +5,7 @@ This repository will hold the files needed to run simulations of microbial commu
 ## How to Use the Conda Environment
 This repository includes an environment file so that you can re-create the environment in which all this code was run.
 
-To build and use the environment, make sure conda is installed and run
+To build and use the environment, make sure Conda is installed and run
 ```
 conda env create --prefix ./env --file environment.yml
 conda activate ./env
