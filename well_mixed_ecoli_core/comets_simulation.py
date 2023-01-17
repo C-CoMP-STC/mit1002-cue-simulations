@@ -43,13 +43,14 @@ sim_params = c.params()
 
 sim_params.set_param('defaultVmax', 18.5)
 sim_params.set_param('defaultKm', 0.000015)
-sim_params.set_param('maxCycles', 1000)
+sim_params.set_param('maxCycles', 600)
 sim_params.set_param('timeStep', 0.01)
 sim_params.set_param('spaceWidth', 1)
 sim_params.set_param('maxSpaceBiomass', 10)
 sim_params.set_param('minSpaceBiomass', 1e-11)
 sim_params.set_param('writeMediaLog', True)
 sim_params.set_param('writeFluxLog', True)
+sim_params.set_param('FluxLogRate', 1)
 
 # Create the experiment
 experiment = c.comets(test_tube, sim_params)
@@ -58,6 +59,6 @@ experiment = c.comets(test_tube, sim_params)
 experiment.run()
 
 # Save the results
-with open('results.pkl', 'wb') as f:
+with open('well_mixed_ecoli_core/results.pkl', 'wb') as f:
     pickle.dump(experiment, f)
 
