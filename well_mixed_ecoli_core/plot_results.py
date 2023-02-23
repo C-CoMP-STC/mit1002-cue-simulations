@@ -28,9 +28,9 @@ if not os.path.exists(output_folder):
 with open('well_mixed_ecoli_core/results.pkl', 'rb') as f:
     experiment = pickle.load(f)
 
-#########
+########################################################################
 # Biomass
-#########
+########################################################################
 # Plot the biomass over time
 # Right now, can use total biomass because the simulation is only the E.
 # coli core model, but if I add other species, I will need to change
@@ -40,9 +40,21 @@ ax.set_ylabel("Biomass (gr.)")
 # Save the biomass plot
 plt.savefig(os.path.join(output_folder, 'biomass.png'))
 
-#######
+########################################################################
+# Fluxes
+########################################################################
+# Plot the fluxes over time
+experiment.fluxes_by_species['e_coli_core'].plot(x="cycle",
+                                                 y=["EX_o2_e",
+                                                    "EX_co2_e"],
+                                                 kind="line")
+
+# Save the biomass plot
+plt.savefig(os.path.join(output_folder, 'fluxes.png'))
+
+########################################################################
 # Media
-#######
+########################################################################
 # Plot the media concentrations over time
 media = experiment.media.copy()
 media = media[media.conc_mmol<900]
@@ -87,7 +99,7 @@ plt.plot(cycle_list, cue_list, label = "CUE")
 ax.set_ylabel("Value")
 ax.set_ylim(0, 1)
 ax.set_xlabel("Cycle")
-ax.set_xlim(0, 1000)
+ax.set_xlim(0, 600)
 plt.legend()
 
 plt.savefig(os.path.join(output_folder, 'cue_all_cycles.png'))
@@ -108,7 +120,7 @@ plt.plot(cycle_list, gge_list, label = "GGE")
 ax.set_ylabel("Value")
 ax.set_xlabel("Cycle")
 ax.set_ylim(0, 1)
-ax.set_xlim(0, 1000)
+ax.set_xlim(0, 600)
 plt.legend()
 
 plt.savefig(os.path.join(output_folder, 'cue_gge_all_cycles.png'))
