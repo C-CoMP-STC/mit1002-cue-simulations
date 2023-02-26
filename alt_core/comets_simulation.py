@@ -25,6 +25,10 @@ test_tube.set_specific_metabolite('h_e',1000);
 # create the model using CobraPy functionality
 alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-core-model/core_314275.5_GP.SBML/core_314275.5_GP.xml")
 
+# Change the objective of the COBRA model
+# Not sure if that will cary over to the COMETS model, but trying it
+alt_cobra.objective = "bio1_biomass"
+
 # use the loaded model to build a comets model
 alt = c.model(alt_cobra)
 
