@@ -37,6 +37,9 @@ with open('alt_core/results.pkl', 'rb') as f:
 ax = experiment.total_biomass.plot(x = 'cycle')
 ax.set_ylabel("Biomass (gr.)")
 
+# Remove the legend since there is only one species (and there is no ID)
+ax.get_legend().remove()
+
 # Save the biomass plot
 plt.savefig(os.path.join(output_folder, 'biomass.png'))
 
@@ -47,9 +50,11 @@ plt.savefig(os.path.join(output_folder, 'biomass.png'))
 # The model doesn't have a name, it is just called ''
 experiment.fluxes_by_species[''].plot(x="cycle",
                                       y=["EX_cpd00007_e0", # Exchange for O2_e0
-                                         "EX_cpd00011_e0"], # Exchange for CO2_e0
+                                         "EX_cpd00011_e0", # Exchange for CO2_e0
+                                         "EX_cpd00027_e0"], # Exchange for G-glucose
                                       kind="line")
-
+# Make a more human-friendly legend
+plt.legend(('O2 Exchange', 'CO2 Exchange', 'Glucose Exchange'))
 # Save the biomass plot
 plt.savefig(os.path.join(output_folder, 'fluxes.png'))
 
