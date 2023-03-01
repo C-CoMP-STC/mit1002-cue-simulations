@@ -10,39 +10,19 @@ import pickle
 # Create empty 1x1 layout
 test_tube = c.layout()
 
-# Set a rich media (copied from one of Ilija's notebooks)
-test_tube.set_specific_metabolite('4abz_e',5.47e-8)
-test_tube.set_specific_metabolite('btn_e',1.31e-8)
-test_tube.set_specific_metabolite('ca2_e',1000)
-test_tube.set_specific_metabolite('cl_e',1000)
-test_tube.set_specific_metabolite('cobalt2_e',1000)
-test_tube.set_specific_metabolite('cu2_e',1000)
-test_tube.set_specific_metabolite('fe2_e',1000)
-test_tube.set_specific_metabolite('fe3_e',1000) 
-test_tube.set_specific_metabolite('fol_e',7.3e-9)
-test_tube.set_specific_metabolite('glc__D_e',0.00075)
-test_tube.set_specific_metabolite('k_e',1000)
-test_tube.set_specific_metabolite('lac__D_e',0)
-test_tube.set_specific_metabolite('lac__L_e',0)
-test_tube.set_specific_metabolite('mg2_e',1000)
-test_tube.set_specific_metabolite('mn2_e',1000)
-test_tube.set_specific_metabolite('mobd_e',1000)
-test_tube.set_specific_metabolite('na_e',1000)
-#test_tube.set_specific_metabolite('nac_e',6.09e-8)
-test_tube.set_specific_metabolite('nac_e',0.0002)
-#test_tube.set_specific_metabolite('nh4_e',0.0007)
-test_tube.set_specific_metabolite('nh4_e',0.00012)
-test_tube.set_specific_metabolite('o2_e',1000)
-test_tube.set_specific_metabolite('pi_e',0.000645)
-#test_tube.set_specific_metabolite('pi_e',1000)
-test_tube.set_specific_metabolite('pnto__R_e',3.4e-8)
-#test_tube.set_specific_metabolite('pnto__R_e',0)
-test_tube.set_specific_metabolite('pydxn_e',8.865e-9)
-test_tube.set_specific_metabolite('ribflv_e',2e-8)
-test_tube.set_specific_metabolite('sel_e',1000)
-test_tube.set_specific_metabolite('so3_e',1000)
-test_tube.set_specific_metabolite('so4_e',1000)
-test_tube.set_specific_metabolite('zn2_e',1000)
+# Add 11mM glucose
+test_tube.set_specific_metabolite('M_cpd00027_e0', 0.011) # D-Glucose_e0 (from name field)
+
+# Add plenty of oxygen
+test_tube.set_specific_metabolite('M_cpd00007_e0', 1000) # O2_e0
+
+# Add the rest of nutrients unlimited (ammonia, phosphate, water and protons)
+# test_tube.set_specific_metabolite('nh4_e',1000); # There was no ammonia in the model?
+# So I added nitrate instead
+test_tube.set_specific_metabolite('M_cpd00209_e0',1000); # Nitrate_e0
+test_tube.set_specific_metabolite('M_cpd00009_e0',1000); # Phosphate_e0
+test_tube.set_specific_metabolite('M_cpd00001_e0',1000); # H2O_e0
+test_tube.set_specific_metabolite('M_cpd00067_e',1000); # H+_e0
 
 # create the model using CobraPy functionality
 alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-core-model/core_314275.5_GP.SBML/core_314275.5_GP.xml")
