@@ -76,75 +76,56 @@ plt.savefig(os.path.join(output_folder, 'media.png'))
 ########################################################################
 # CUE
 ########################################################################
-# Load the E. coli model (Needed to get the exchange reactions)
+# Load the model (Needed to get the exchange reactions)
 alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-core-model/core_314275.5_GP.SBML/core_314275.5_GP.xml")
 
 # Get the exchange reactions for the E coli core model
 # I think I would rather do this in the comets_simulation script, and
 # save the exchange reactions with the results, but for now just do it
 # here
-c_ex_rxns = atomExchangeMetabolite(e_coli_cobra)
+c_ex_rxns = atomExchangeMetabolite(alt_cobra, ex_nomenclature = {'e0'})
 
 # Get the fluxes for each exchange reaction for each cycle of the
 # experiment
-fluxes = experiment.fluxes_by_species['e_coli_core'].copy()
+fluxes = experiment.fluxes_by_species[''].copy()
 # Create an empty array to hold the CUE for each cycle
 cue_list = []
 gge_list = []
 # Loop through each cycle and calculate the CUE and the GGE
 for index, row in fluxes.iterrows():
-    cue_list.append(calculate_cue(row, c_ex_rxns))
+    cue_list.append(calculate_cue(row, c_ex_rxns, resp_rxn = 'EX_cpd00011_e0'))
     gge_list.append(calculate_gge(row, c_ex_rxns))
 
 # Plot the CUE for each cycle
-cycle_list = experiment.fluxes_by_species['e_coli_core']['cycle'].tolist()
+cycle_list = experiment.fluxes_by_species['']['cycle'].tolist()
 
-# Plot 1: CUE only, zoomed out for the whole experiment
+# Plot 1: CUE only
 fig, ax = plt.subplots()
 plt.plot(cycle_list, cue_list, label = "CUE")
 ax.set_ylabel("Value")
-ax.set_ylim(0, 1)
+# ax.set_ylim(0, 1) # Would need to increase the upper limit so that the line is visible
 ax.set_xlabel("Cycle")
 ax.set_xlim(0, 600)
 plt.legend()
 
-plt.savefig(os.path.join(output_folder, 'cue_all_cycles.png'))
-
-# Plot 2: CUE only, zoomed in
-fig, ax = plt.subplots()
-plt.plot(cycle_list, cue_list, label = "CUE")
-ax.set_ylabel("Value")
-ax.set_xlabel("Cycle")
-plt.legend()
-
-plt.savefig(os.path.join(output_folder, 'cue_zoom_in.png'))
+plt.savefig(os.path.join(output_folder, 'cue.png'))
 
 # Plot 3: CUE and GGE for the whole experiment
 fig, ax = plt.subplots()
 plt.plot(cycle_list, cue_list, label = "CUE")
-plt.plot(cycle_list, gge_list, label = "GGE")
+plt.plot(cycle_list, gge_list, '--', label = "GGE") # Dashed line so you can see that the two are directly on top of one another
 ax.set_ylabel("Value")
 ax.set_xlabel("Cycle")
-ax.set_ylim(0, 1)
+# ax.set_ylim(0, 1) # Would need to increase the upper limit so that the lines are visible
 ax.set_xlim(0, 600)
 plt.legend()
 
-plt.savefig(os.path.join(output_folder, 'cue_gge_all_cycles.png'))
+plt.savefig(os.path.join(output_folder, 'cue_gge.png'))
 
-# Plot 4: CUE and GGE zoomed in
-fig, ax = plt.subplots()
-plt.plot(cycle_list, cue_list, label = "CUE")
-plt.plot(cycle_list, gge_list, label = "GGE")
-ax.set_ylabel("Value")
-ax.set_xlabel("Cycle")
-plt.legend()
-
-plt.savefig(os.path.join(output_folder, 'cue_gge_zoom_in.png'))
-
-##############
+########################################################################
 # Carbon Fates
 # Different from CUE- because it isn't just one value
-##############
+########################################################################
 # Get the carbon fates for each cycle
 respiration = []
 exudation = []
