@@ -67,17 +67,17 @@ media = media[media.conc_mmol<900]
 
 fig, ax = plt.subplots()
 media.groupby('metabolite').plot(x='cycle', ax =ax, y='conc_mmol')
-ax.legend(('glucose'))
+ax.legend(('D-Glucose_e0', 'H+_e0', 'Nitrite_e0')) # TODO: Find a way to get the metabolite names from the media dataframe
 ax.set_ylabel("Concentration (mmol)")
 
 # Save the media plot
 plt.savefig(os.path.join(output_folder, 'media.png'))
 
-#####
+########################################################################
 # CUE
-#####
+########################################################################
 # Load the E. coli model (Needed to get the exchange reactions)
-e_coli_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-core-model/core_314275.5_GP.SBML/core_314275.5_GP.xml")
+alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-core-model/core_314275.5_GP.SBML/core_314275.5_GP.xml")
 
 # Get the exchange reactions for the E coli core model
 # I think I would rather do this in the comets_simulation script, and
