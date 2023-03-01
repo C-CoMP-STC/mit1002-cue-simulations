@@ -10,19 +10,20 @@ import pickle
 # Create empty 1x1 layout
 test_tube = c.layout()
 
-# Add 11mM glucose
-test_tube.set_specific_metabolite('M_cpd00027_e0', 0.011) # D-Glucose_e0 (from name field)
+# Add compounds in "Glucose minimal media from the SI file"
+# Set glucose os 0.011, everything else as 1000
+test_tube.set_specific_metabolite('cpd00027_e0', 0.011) # D-Glucose_e0 (from name field)
 
 # Add plenty of oxygen
-test_tube.set_specific_metabolite('M_cpd00007_e0', 1000) # O2_e0
+test_tube.set_specific_metabolite('cpd00007_e0', 1000) # O2_e0
 
 # Add the rest of nutrients unlimited (ammonia, phosphate, water and protons)
 # test_tube.set_specific_metabolite('nh4_e',1000); # There was no ammonia in the model?
 # So I added nitrate instead
-test_tube.set_specific_metabolite('M_cpd00209_e0',1000); # Nitrate_e0
-test_tube.set_specific_metabolite('M_cpd00009_e0',1000); # Phosphate_e0
-test_tube.set_specific_metabolite('M_cpd00001_e0',1000); # H2O_e0
-test_tube.set_specific_metabolite('M_cpd00067_e',1000); # H+_e0
+test_tube.set_specific_metabolite('cpd00209_e0',1000); # Nitrate_e0
+test_tube.set_specific_metabolite('cpd00009_e0',1000); # Phosphate_e0
+test_tube.set_specific_metabolite('cpd00001_e0',1000); # H2O_e0
+test_tube.set_specific_metabolite('cpd00067_e',1000); # H+_e0
 
 # create the model using CobraPy functionality
 alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-core-model/core_314275.5_GP.SBML/core_314275.5_GP.xml")
