@@ -17,10 +17,10 @@ test_tube.set_specific_metabolite('glc__D_e', 0.011)
 test_tube.set_specific_metabolite('o2_e', 1000)
 
 # Add the rest of nutrients unlimited (ammonia, phosphate, water and protons)
-test_tube.set_specific_metabolite('nh4_e',1000);
-test_tube.set_specific_metabolite('pi_e',1000);
-test_tube.set_specific_metabolite('h2o_e',1000);
-test_tube.set_specific_metabolite('h_e',1000);
+test_tube.set_specific_metabolite('nh4_e',1000)
+test_tube.set_specific_metabolite('pi_e',1000)
+test_tube.set_specific_metabolite('h2o_e',1000)
+test_tube.set_specific_metabolite('h_e',1000)
 
 # create the model using CobraPy functionality
 e_coli_cobra = cobra.io.load_model('textbook')
