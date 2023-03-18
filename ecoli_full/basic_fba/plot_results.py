@@ -5,14 +5,14 @@ import pickle
 
 # Set a folder for the plots
 # Assuming you are running from the root of the repository
-output_folder = 'ecoli_full_model/basic_fba/plots'
+output_folder = 'ecoli_full/basic_fba/plots'
 
 # Check if the folder exists, if not, create it
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
 # Load the results
-with open('ecoli_full_model/basic_fba/results.pkl', 'rb') as f:
+with open('ecoli_full/basic_fba/results.pkl', 'rb') as f:
     results = pickle.load(f)
 
 # Get the dataframes

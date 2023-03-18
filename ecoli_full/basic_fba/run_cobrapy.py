@@ -32,9 +32,17 @@ c_ex_rxns = atomExchangeMetabolite(model)
 data = []
 # Loop through the carbon concentrations
 for ammonia in range(0, 100, 10): # What range should I use?
-    # Update glucose in the medium
+    # Make a new medium based on the medium in the model file
     medium = model.medium
+    # Constrain the oxygen and the glucose to something reasonable
+    medium['EX_o2_e'] = 6
+    medium['EX_glc__D_e'] = 10
+    # Remove B12 from the medium
+    medium['EX_cbl1_e'] = 0 # TODO: Find the minimal value to use
+    # Upate the ammonia in the medium
     medium['EX_nh4_e'] = ammonia
+    # Then set the medium
+    model.medium = medium
 
     # Check that there are no other media components with nitrogen
     # for r in medium:
@@ -71,9 +79,18 @@ nitrogen_results = pd.DataFrame(data)
 data = []
 # Loop through the carbon concentrations
 for glc in range(10, 21):
-    # Update glucose in the medium
+    # Make a new medium based on the medium in the model file
     medium = model.medium
+    # Constrain the oxygen to something reasonable
+    medium['EX_o2_e'] = 6
+    # Do not contrain the ammonia
+    medium['EX_nh4_e'] = 1000
+    # Remove B12 from the medium
+    medium['EX_cbl1_e'] = 0 # TODO: Find the minimal value to use
+    # Upate the glucose in the medium
     medium['EX_glc__D_e'] = glc
+    # Then set the medium
+    model.medium = medium
 
     # Check that the export reaction bounds are 0 for all carbon sources
     # except glucose
@@ -105,6 +122,18 @@ carbon_results = pd.DataFrame(data)
 # Make a dataframe to store the results
 data = []
 for vm in np.linspace(0, 20, 5):
+    # Make a new medium based on the medium in the model file
+    medium = model.medium
+    # Constrain the oxygen and the glucose to something reasonable
+    medium['EX_o2_e'] = 6
+    medium['EX_glc__D_e'] = 10
+    # Remove B12 from the medium
+    medium['EX_cbl1_e'] = 0 # TODO: Find the minimal value to use
+    # Do not constain the ammonia in the medium
+    medium['EX_nh4_e'] = 1000
+    # Then set the medium
+    model.medium = medium
+
     # Update maintainance flux
     model.reactions.ATPM.lower_bound = vm
 
@@ -127,5 +156,5 @@ vm_results = pd.DataFrame(data)
 # Save the results
 ########################################################################
 results = [nitrogen_results, carbon_results, vm_results]
-with open('ecoli_full_model/basic_fba/results.pkl', 'wb') as f:
+with open('ecoli_full/basic_fba/results.pkl', 'wb') as f:
     pickle.dump(results, f)
