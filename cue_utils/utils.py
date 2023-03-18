@@ -49,7 +49,7 @@ def calculate_gge(row, c_ex_rxns):
     return gge
 
 
-def extract_c_fates(row, c_ex_rxns, resp_rxn = 'EX_co2_e'):
+def extract_c_fates(row, c_ex_rxns, resp_rxn = 'EX_co2_e', norm = True):
     # TODO: Document this function
     # Get the exchange fluxes for the current cycle
     c_ex_fluxes = {r: float(row[r]) * -c for r, c in c_ex_rxns.items()}
@@ -60,14 +60,17 @@ def extract_c_fates(row, c_ex_rxns, resp_rxn = 'EX_co2_e'):
                          if flux < 0 and rxn != resp_rxn]))
     # Calculate the biomass as everything that is not uptake or respiration
     biomass = uptake - respiration - exudation
-    # Normalize everything to the uptake
-    if uptake == 0:
-        exudation_norm = 0
-        respiration_norm = 0
-        biomass_norm = 0
+    # Normalize everything to the uptake or not
+    if norm == True:
+        if uptake == 0:
+            exudation_norm = 0
+            respiration_norm = 0
+            biomass_norm = 0
+        else:
+            respiration_norm = respiration/uptake
+            exudation_norm = exudation/uptake
+            biomass_norm = biomass/uptake
+        return [respiration_norm, exudation_norm, biomass_norm]
     else:
-        respiration_norm = respiration/uptake
-        exudation_norm = exudation/uptake
-        biomass_norm = biomass/uptake
-
-    return [respiration_norm, exudation_norm, biomass_norm]
+        return [respiration, exudation, biomass]
+    
