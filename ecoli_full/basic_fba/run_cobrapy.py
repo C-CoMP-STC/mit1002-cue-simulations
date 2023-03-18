@@ -37,8 +37,6 @@ for ammonia in range(0, 100, 10): # What range should I use?
     # Constrain the oxygen and the glucose to something reasonable
     medium['EX_o2_e'] = 6
     medium['EX_glc__D_e'] = 10
-    # Remove B12 from the medium
-    medium['EX_cbl1_e'] = 0 # TODO: Find the minimal value to use
     # Upate the ammonia in the medium
     medium['EX_nh4_e'] = ammonia
     # Then set the medium
@@ -85,8 +83,6 @@ for glc in range(10, 21):
     medium['EX_o2_e'] = 6
     # Do not contrain the ammonia
     medium['EX_nh4_e'] = 1000
-    # Remove B12 from the medium
-    medium['EX_cbl1_e'] = 0 # TODO: Find the minimal value to use
     # Upate the glucose in the medium
     medium['EX_glc__D_e'] = glc
     # Then set the medium
@@ -127,8 +123,6 @@ for vm in np.linspace(0, 20, 5):
     # Constrain the oxygen and the glucose to something reasonable
     medium['EX_o2_e'] = 6
     medium['EX_glc__D_e'] = 10
-    # Remove B12 from the medium
-    medium['EX_cbl1_e'] = 0 # TODO: Find the minimal value to use
     # Do not constain the ammonia in the medium
     medium['EX_nh4_e'] = 1000
     # Then set the medium
