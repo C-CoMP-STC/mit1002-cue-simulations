@@ -31,3 +31,41 @@ g.set_ylabel('Carbon Molecules (mmol/ [gDW h])')
 g.set_title('Carbon Fates')
 # Save the plot
 plt.savefig(os.path.join(output_folder, 'c_fates.png'))
+# Clear the plot
+plt.clf()
+
+########################################################################
+# CUE vs Carbon Source
+########################################################################
+# Plot the CUE vs Carbon Source all as blue bars
+cue_bars = sns.barplot(x='c-source', y='cue', data=results, color='steelblue')
+# Set the x label
+cue_bars.set_xlabel('Carbon Import Reaction')
+# Turn the x labels to be 90 degrees
+cue_bars.set_xticklabels(cue_bars.get_xticklabels(), rotation=90) # TODO: Change to the metnaolite name rather than the reaction name
+# Set the y label
+cue_bars.set_ylabel('CUE')
+# Title the plot
+cue_bars.set_title('CUE vs. Single Carbon Source')
+# Save the plot
+plt.savefig(os.path.join(output_folder, 'cue.png'))
+# Clear the plot
+plt.clf()
+
+########################################################################
+# GGE vs Carbon Source
+########################################################################
+# Plot the GGE vs Carbon Source
+g = sns.barplot(x='c-source', y='gge', data=results, color='steelblue')
+# Set the x label
+g.set_xlabel('Carbon Import Reaction')
+# Turn the x labels to be 90 degrees
+g.set_xticklabels(g.get_xticklabels(), rotation=90) # TODO: Change to the metnaolite name rather than the reaction name
+# Set the y label
+g.set_ylabel('GGE')
+# Title the plot
+g.set_title('GGE vs. Single Carbon Source')
+# Save the plot
+plt.savefig(os.path.join(output_folder, 'gge.png'))
+# Clear the plot
+plt.clf()
