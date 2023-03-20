@@ -13,7 +13,7 @@ from utils import (
                    atomExchangeMetabolite,
                    calculate_cue,
                    calculate_gge,
-                   extract_c_fates)
+                   extract_c_fates_from_solution)
 
 # This script runs and saves the results from a COBRApy simulation of
 # the E. coli full model, with varying nitrogen, carbon, and ATP
@@ -58,14 +58,29 @@ for ammonia in range(0, 100, 10): # What range should I use?
         # Perform FBA
         sol = model.optimize()
 
-        # Calculate CUE
-        cue = calculate_cue(sol, c_ex_rxns)
+        # Extract the carbon fates for the solution
+        c_fates = extract_c_fates_from_solution(sol, c_ex_rxns, norm=False)
+        uptake = c_fates[0]
+        respiration = c_fates[1]
+        exudation = c_fates[2]
+        biomass = c_fates[3]
 
-        # Calculate GGE
-        gge = calculate_gge(sol, c_ex_rxns)
+        # Calculate CUE from the c fates (not using my function)
+        cue = 1 - respiration/uptake
+
+        # Calculate GGE from the c fates (not using my function)
+        gge = 1 - (respiration + exudation)/uptake
         
         # Save
-        d = {'ammonia': ammonia, 'vm': vm, 'cue': cue, 'gge': gge}
+        d = {'ammonia': ammonia, 
+             'vm': vm,
+             'fluxes': sol.fluxes,
+             'uptake': uptake, 
+             'respiration': respiration,
+             'exudation': exudation,
+             'biomass': biomass,
+             'cue': cue,
+             'gge': gge}
         data.append(d)
 
 nitrogen_results = pd.DataFrame(data)
@@ -100,14 +115,29 @@ for glc in range(10, 21):
         # Perform FBA
         sol = model.optimize()
 
-        # Calculate CUE
-        cue = calculate_cue(sol, c_ex_rxns)
+        # Extract the carbon fates for the solution
+        c_fates = extract_c_fates_from_solution(sol, c_ex_rxns, norm=False)
+        uptake = c_fates[0]
+        respiration = c_fates[1]
+        exudation = c_fates[2]
+        biomass = c_fates[3]
 
-        # Calculate GGE
-        gge = calculate_gge(sol, c_ex_rxns)
+        # Calculate CUE from the c fates (not using my function)
+        cue = 1 - respiration/uptake
+
+        # Calculate GGE from the c fates (not using my function)
+        gge = 1 - (respiration + exudation)/uptake
 
         # Save
-        d = {'glc': glc, 'vm': vm, 'cue': cue, 'gge': gge}
+        d = {'glc': glc,
+             'vm': vm,
+             'fluxes': sol.fluxes,
+             'uptake': uptake, 
+             'respiration': respiration,
+             'exudation': exudation,
+             'biomass': biomass,
+             'cue': cue,
+             'gge': gge}
         data.append(d)
 
 carbon_results = pd.DataFrame(data)
@@ -134,15 +164,29 @@ for vm in np.linspace(0, 20, 5):
     # Perform FBA
     sol = model.optimize()
 
-    # Calculate CUE
-    cue = calculate_cue(sol, c_ex_rxns)
+    # Extract the carbon fates for the solution
+    c_fates = extract_c_fates_from_solution(sol, c_ex_rxns, norm=False)
+    uptake = c_fates[0]
+    respiration = c_fates[1]
+    exudation = c_fates[2]
+    biomass = c_fates[3]
 
-    # Calculate GGE
-    gge = calculate_gge(sol, c_ex_rxns)
+    # Calculate CUE from the c fates (not using my function)
+    cue = 1 - respiration/uptake
+
+    # Calculate GGE from the c fates (not using my function)
+    gge = 1 - (respiration + exudation)/uptake
 
     # Save
-    d = {'vm': vm, 'cue': cue, 'gge': gge}
-    data.append(d)
+    d = {'vm': vm,
+         'fluxes': sol.fluxes,
+         'uptake': uptake, 
+         'respiration': respiration,
+         'exudation': exudation,
+         'biomass': biomass,
+         'cue': cue,
+         'gge': gge}
+data.append(d)
 
 vm_results = pd.DataFrame(data)
 
