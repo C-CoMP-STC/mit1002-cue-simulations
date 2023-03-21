@@ -7,27 +7,23 @@
 
 %% Load the model
 % Downloaded this from the BiGG website
-model = readCbModel('iJO1366.xml');
-
-% Allow unlimited oxygen uptake
-model = changeRxnBounds(model,'EX_o2_e',-1000,'l');
-
-% Ensure that the biomass reaction is set as the objective function
-odel = changeObjective(model,'BIOMASS_Ec_iJO1366_WT_53p95M');
+model = readCbModel('Ec_iJR904_flux1.xml');
 
 % Get the indices of useful reactions
-glcIdx = find(strcmp(model.rxns, 'EX_glc__D_e'));
-o2Idx = find(strcmp(model.rxns, 'EX_o2_e'));
-acIdx = find(strcmp(model.rxns, 'EX_ac_e'));
-respIdx = find(strcmp(model.rxns, 'EX_co2_e'));
-biomassIdx = find(strcmp(model.rxns, 'BIOMASS_Ec_iJO1366_WT_53p95M'));
+glcIdx = find(strcmp(model.rxns,'EX_glc_e_'));
+o2Idx = find(strcmp(model.rxns,'EX_o2_e_'));
+acIdx = find(strcmp(model.rxns, 'EX_ac_e_'));
+respIdx = find(strcmp(model.rxns, 'EX_co2_e_'));
+
+% Allow unlimited oxygen uptake
+model.lb(o2Idx) = -1000;
 
 %% FBA: Glucose
 % Can check all constraints with:
 % printConstraints(model, -1000, 1000)
 
 % Limit glucose uptake
-model = changeRxnBounds(model,'EX_glc__D_e',-10,'l');
+model.lb(glcIdx) = -10;
 
 % Perform FBA with maximization of the biomass reaction as the objective
 glcSolution = optimizeCbModel(model,'max');
@@ -44,10 +40,10 @@ disp(['EX_co2_e: ', int2str(glcSolution.v(respIdx))])
 
 %% FBA: Acetate
 % Set the glucose to 0
-model = changeRxnBounds(model,'EX_glc__D_e',0,'l');
+model.lb(glcIdx) = 0;
 
-% Set the acetate to 5 (half of glucose because it has 2 carbons)
-model = changeRxnBounds(model,'EX_ac_e',-5,'l');
+% Set the acetate to 30 (more than glucose because it has 2 carbons)
+model.lb(acIdx) = -30;
 
 % Perform FBA with maximization of the biomass reaction as the objective
 acSolution = optimizeCbModel(model,'max');
@@ -58,11 +54,11 @@ disp(['EX_ac_e: ', int2str(acSolution.v(acIdx))])
 disp(['EX_co2_e: ', int2str(acSolution.v(respIdx))])
 
 %% FBA: Mix
-% Set the glucose to 10
-model = changeRxnBounds(model,'EX_glc__D_e',-10,'l');
+% Set the glucose to 5
+model.lb(glcIdx) = -5;
 
-% Set the acetate to 5 (half of glucose because it has 2 carbons)
-model = changeRxnBounds(model,'EX_ac_e',-5,'l');
+% Set the acetate to 15
+model.lb(acIdx) = - 15;
 
 % Perform FBA with maximization of the biomass reaction as the objective
 mixSolution = optimizeCbModel(model,'max');
@@ -105,5 +101,11 @@ model=setWeights(model,4,0);
 
 % Run caFBA
 caFbaSolution = CAFBA_OptimizeCbModel_glpk(model);
+
+% Print key reaction fluxes
+disp(['EX_glc__D_e: ', int2str(caFbaSolution.x(glcIdx))])
+disp(['EX_ac_e: ', int2str(caFbaSolution.x(acIdx))])
+disp(['EX_co2_e: ', int2str(caFbaSolution.x(respIdx))])
+
 
 %% Save the results
