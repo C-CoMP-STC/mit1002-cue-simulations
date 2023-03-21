@@ -69,3 +69,8 @@ g.set_title('GGE vs. Single Carbon Source')
 plt.savefig(os.path.join(output_folder, 'gge.png'))
 # Clear the plot
 plt.clf()
+
+########################################################################
+# Group all of the carbon sources by the class of carbon source (e.g. 
+# sugar, amino acid, etc.)
+########################################################################
