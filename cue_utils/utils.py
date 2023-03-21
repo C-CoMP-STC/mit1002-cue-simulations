@@ -49,7 +49,7 @@ def calculate_gge(row, c_ex_rxns):
     return gge
 
 
-def extract_c_fates(row, c_ex_rxns, resp_rxn = 'EX_co2_e'):
+def extract_c_fates(row, c_ex_rxns, resp_rxn = 'EX_co2_e', norm = True):
     # TODO: Document this function
     # Get the exchange fluxes for the current cycle
     c_ex_fluxes = {r: float(row[r]) * -c for r, c in c_ex_rxns.items()}
@@ -60,14 +60,48 @@ def extract_c_fates(row, c_ex_rxns, resp_rxn = 'EX_co2_e'):
                          if flux < 0 and rxn != resp_rxn]))
     # Calculate the biomass as everything that is not uptake or respiration
     biomass = uptake - respiration - exudation
-    # Normalize everything to the uptake
-    if uptake == 0:
-        exudation_norm = 0
-        respiration_norm = 0
-        biomass_norm = 0
+    # Normalize everything to the uptake or not
+    if norm == True:
+        if uptake == 0:
+            exudation_norm = 0
+            respiration_norm = 0
+            biomass_norm = 0
+        else:
+            respiration_norm = respiration/uptake
+            exudation_norm = exudation/uptake
+            biomass_norm = biomass/uptake
+        return [respiration_norm, exudation_norm, biomass_norm]
     else:
-        respiration_norm = respiration/uptake
-        exudation_norm = exudation/uptake
-        biomass_norm = biomass/uptake
+        return [respiration, exudation, biomass]
 
-    return [respiration_norm, exudation_norm, biomass_norm]
+
+def extract_c_fates_from_solution(solution, c_ex_rxns, resp_rxn = 'EX_co2_e', norm = True):
+    # TODO: Document this function
+    # Get the exchange fluxes for the current cycle
+    c_ex_fluxes = {r: solution.fluxes[r] * c for r, c in c_ex_rxns.items()}
+    # Use the exchange fluxes to calculate uptake, resp, and exudation
+    uptake = sum([flux for rxn, flux in c_ex_fluxes.items() if flux < 0
+                  and rxn != resp_rxn]) # Should I count the resp_rxn here?
+    if c_ex_fluxes[resp_rxn] < 0:
+        # If the co2 flux is negative than the model is taking up CO2???
+        co2_release = 0
+    else:
+        co2_release = c_ex_fluxes[resp_rxn]
+    exudation = abs(sum([flux for rxn, flux in c_ex_fluxes.items()
+                         if flux > 0 and rxn != resp_rxn]))
+    # Calculate the biomass as everything that is not uptake or co2 release
+    biomass = abs(uptake) - co2_release - exudation
+    # Normalize everything to the uptake or not
+    if norm == True:
+        if uptake == 0:
+            exudation_norm = 0
+            co2_release_norm = 0
+            biomass_norm = 0
+        else:
+            co2_release_norm = co2_release/uptake
+            exudation_norm = exudation/uptake
+            biomass_norm = biomass/uptake
+        return [co2_release_norm, exudation_norm, biomass_norm]
+    else:
+        return [abs(uptake), co2_release, exudation, biomass]
+    
