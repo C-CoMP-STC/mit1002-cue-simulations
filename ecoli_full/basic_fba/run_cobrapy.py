@@ -189,7 +189,7 @@ for vm in np.linspace(0, 20, 5):
          'biomass': biomass,
          'cue': cue,
          'gge': gge}
-data.append(d)
+    data.append(d)
 
 vm_results = pd.DataFrame(data)
 
