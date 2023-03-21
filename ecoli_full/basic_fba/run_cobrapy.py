@@ -31,12 +31,13 @@ c_ex_rxns = atomExchangeMetabolite(model)
 # Make a dataframe to store the results
 data = []
 # Loop through the carbon concentrations
-for ammonia in range(0, 100, 10): # What range should I use?
+for ammonia in range(0, 101, 10): # What range should I use?
     # Make a new medium based on the medium in the model file
     medium = model.medium
-    # Constrain the oxygen and the glucose to something reasonable
-    medium['EX_o2_e'] = 6
+    # Constrain theglucose to something reasonable
     medium['EX_glc__D_e'] = 10
+    # Try not constraining the oxygen
+    medium['EX_o2_e'] = 1000
     # Upate the ammonia in the medium
     medium['EX_nh4_e'] = ammonia
     # Then set the medium
@@ -94,8 +95,8 @@ data = []
 for glc in range(10, 21):
     # Make a new medium based on the medium in the model file
     medium = model.medium
-    # Constrain the oxygen to something reasonable
-    medium['EX_o2_e'] = 6
+    # Try not constraining the oxygen
+    medium['EX_o2_e'] = 1000
     # Do not contrain the ammonia
     medium['EX_nh4_e'] = 1000
     # Upate the glucose in the medium
@@ -148,11 +149,13 @@ carbon_results = pd.DataFrame(data)
 # Make a dataframe to store the results
 data = []
 for vm in np.linspace(0, 20, 5):
+    # Can I move this outside the vm loop?
     # Make a new medium based on the medium in the model file
     medium = model.medium
-    # Constrain the oxygen and the glucose to something reasonable
-    medium['EX_o2_e'] = 6
+    # Constrain the glucose to something reasonable
     medium['EX_glc__D_e'] = 10
+    # Try not constraining the oxygen
+    medium['EX_o2_e'] = 1000
     # Do not constain the ammonia in the medium
     medium['EX_nh4_e'] = 1000
     # Then set the medium
