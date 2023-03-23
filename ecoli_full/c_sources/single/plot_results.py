@@ -18,7 +18,7 @@ with open('ecoli_full/c_sources/single/results.pkl', 'rb') as f:
 ########################################################################
 # Carbon Fates vs Carbon Source
 ########################################################################
-data = results[['respiration', 'exudation', 'biomass']]
+data = results[['co2', 'organic_c', 'biomass']]
 # Plot the stacked bar plot
 g = data.plot(kind='bar', stacked=True, color=['red', 'skyblue', 'green'])
 # Set the x label
@@ -69,8 +69,3 @@ g.set_title('GGE vs. Single Carbon Source')
 plt.savefig(os.path.join(output_folder, 'gge.png'))
 # Clear the plot
 plt.clf()
-
-########################################################################
-# Group all of the carbon sources by the class of carbon source (e.g. 
-# sugar, amino acid, etc.)
-########################################################################

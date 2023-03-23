@@ -51,23 +51,23 @@ for c_ex_rxn in c_ex_rxns:
     # Extract the carbon fates for the solution
     c_fates = extract_c_fates_from_solution(sol, c_ex_rxns, norm=False)
     uptake = c_fates[0]
-    respiration = c_fates[1]
-    exudation = c_fates[2]
+    co2 = c_fates[1]
+    organic_c = c_fates[2]
     biomass = c_fates[3]
 
     # Calculate CUE from the c fates (not using my function)
-    cue = 1 - respiration/uptake
+    cue = 1 - co2/uptake
 
     # Calculate GGE from the c fates (not using my function)
-    gge = 1 - (respiration + exudation)/uptake
+    gge = 1 - (co2 + organic_c)/uptake
     
     # Save
     d = {'c-source': c_ex_rxn,
          'c-source-flux': sol.fluxes[c_ex_rxn],
         'fluxes': sol.fluxes,
         'uptake': uptake, 
-        'respiration': respiration,
-        'exudation': exudation,
+        'co2': co2,
+        'organic_c': organic_c,
         'biomass': biomass,
         'cue': cue,
         'gge': gge}
