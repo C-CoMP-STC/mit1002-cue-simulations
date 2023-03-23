@@ -62,23 +62,23 @@ for ammonia in range(0, 101, 10): # What range should I use?
         # Extract the carbon fates for the solution
         c_fates = extract_c_fates_from_solution(sol, c_ex_rxns, norm=False)
         uptake = c_fates[0]
-        respiration = c_fates[1]
-        exudation = c_fates[2]
+        co2 = c_fates[1]
+        organic_c = c_fates[2]
         biomass = c_fates[3]
 
         # Calculate CUE from the c fates (not using my function)
-        cue = 1 - respiration/uptake
+        cue = 1 - co2/uptake
 
         # Calculate GGE from the c fates (not using my function)
-        gge = 1 - (respiration + exudation)/uptake
+        gge = 1 - (co2 + organic_c)/uptake
         
         # Save
         d = {'ammonia': ammonia, 
              'vm': vm,
              'fluxes': sol.fluxes,
              'uptake': uptake, 
-             'respiration': respiration,
-             'exudation': exudation,
+             'co2': co2,
+             'organic_c': organic_c,
              'biomass': biomass,
              'cue': cue,
              'gge': gge}
@@ -119,23 +119,23 @@ for glc in range(10, 21):
         # Extract the carbon fates for the solution
         c_fates = extract_c_fates_from_solution(sol, c_ex_rxns, norm=False)
         uptake = c_fates[0]
-        respiration = c_fates[1]
-        exudation = c_fates[2]
+        co2 = c_fates[1]
+        organic_c = c_fates[2]
         biomass = c_fates[3]
 
         # Calculate CUE from the c fates (not using my function)
-        cue = 1 - respiration/uptake
+        cue = 1 - co2/uptake
 
         # Calculate GGE from the c fates (not using my function)
-        gge = 1 - (respiration + exudation)/uptake
+        gge = 1 - (co2 + organic_c)/uptake
 
         # Save
         d = {'glc': glc,
              'vm': vm,
              'fluxes': sol.fluxes,
              'uptake': uptake, 
-             'respiration': respiration,
-             'exudation': exudation,
+             'co2': co2,
+             'organic_c': organic_c,
              'biomass': biomass,
              'cue': cue,
              'gge': gge}
@@ -170,22 +170,22 @@ for vm in np.linspace(0, 20, 5):
     # Extract the carbon fates for the solution
     c_fates = extract_c_fates_from_solution(sol, c_ex_rxns, norm=False)
     uptake = c_fates[0]
-    respiration = c_fates[1]
-    exudation = c_fates[2]
+    co2 = c_fates[1]
+    organic_c = c_fates[2]
     biomass = c_fates[3]
 
     # Calculate CUE from the c fates (not using my function)
-    cue = 1 - respiration/uptake
+    cue = 1 - co2/uptake
 
     # Calculate GGE from the c fates (not using my function)
-    gge = 1 - (respiration + exudation)/uptake
+    gge = 1 - (co2 + organic_c)/uptake
 
     # Save
     d = {'vm': vm,
          'fluxes': sol.fluxes,
          'uptake': uptake, 
-         'respiration': respiration,
-         'exudation': exudation,
+         'co2': co2,
+         'organic_c': organic_c,
          'biomass': biomass,
          'cue': cue,
          'gge': gge}

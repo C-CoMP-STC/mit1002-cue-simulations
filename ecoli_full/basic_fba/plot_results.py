@@ -49,7 +49,7 @@ plt.savefig(os.path.join(output_folder, 'gge_ammonia_vm.png'))
 for vm in nitrogen_results['vm'].unique():
     # Get the data needed for plotting for the current vm
     data = nitrogen_results.set_index('ammonia')
-    data = data[data['vm'] == vm][['respiration', 'exudation', 'biomass']]
+    data = data[data['vm'] == vm][['co2', 'organic_c', 'biomass']]
     # Plot the stacked bar plot
     g = data.plot(kind='bar', stacked=True, color=['red', 'skyblue', 'green'])
     # Set the x and y labels
@@ -75,13 +75,13 @@ g = sns.relplot(x='glc', y='gge', hue='vm', data=carbon_results, kind='line',
 # Save the plot
 plt.savefig(os.path.join(output_folder, 'gge_glc_vm.png'))
 
-# Plot the respiration, exudation, and biomass as a stacked bar plot
+# Plot the co2, exudation, and biomass as a stacked bar plot
 # with the x axis being the ammonia concentration, and separate plots
 # for each ATPM value
 for vm in carbon_results['vm'].unique():
     # Get the data needed for plotting for the current vm
     data = carbon_results.set_index('glc')
-    data = data[data['vm'] == vm][['respiration', 'exudation', 'biomass']]
+    data = data[data['vm'] == vm][['co2', 'organic_c', 'biomass']]
     # Plot the stacked bar plot
     g = data.plot(kind='bar', stacked=True, color=['red', 'skyblue', 'green'])
     # Set the x and y labels
@@ -111,7 +111,7 @@ plt.savefig(os.path.join(output_folder, 'gge_vm.png'))
 # Plot the respiration, exudation, and biomass as a stacked bar plot
 # with the x axis being the ATPM value
 # Get the data needed for plotting
-data = vm_results.set_index('vm')[['respiration', 'exudation', 'biomass']]
+data = vm_results.set_index('vm')[['co2', 'organic_c', 'biomass']]
 # Plot the stacked bar plot
 g = data.plot(kind='bar', stacked=True, color=['red', 'skyblue', 'green'])
 # Set the x and y labels
