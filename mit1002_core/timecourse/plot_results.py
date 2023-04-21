@@ -18,14 +18,14 @@ from utils import (
 
 # Set a folder for the plots
 # Assuming you are running from the root of the repository
-output_folder = 'alt_core/plots'
+output_folder = 'mit1002_core/timecourse/plots'
 
 # Check if the folder exists, if not, create it
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
 # Load the results
-with open('alt_core/results.pkl', 'rb') as f:
+with open('mit1002_core/timecourse/results.pkl', 'rb') as f:
     experiment = pickle.load(f)
 
 ########################################################################
@@ -51,7 +51,7 @@ plt.savefig(os.path.join(output_folder, 'biomass.png'))
 experiment.fluxes_by_species[''].plot(x="cycle",
                                       y=["EX_cpd00007_e0", # Exchange for O2_e0
                                          "EX_cpd00011_e0", # Exchange for CO2_e0
-                                         "EX_cpd00027_e0"], # Exchange for G-glucose
+                                         "EX_cpd00027_e0"], # Exchange for D-glucose
                                       kind="line")
 # Make a more human-friendly legend
 plt.legend(('O2 Exchange', 'CO2 Exchange', 'Glucose Exchange'))
@@ -67,7 +67,7 @@ media = media[media.conc_mmol<900]
 
 fig, ax = plt.subplots()
 media.groupby('metabolite').plot(x='cycle', ax =ax, y='conc_mmol')
-ax.legend(('D-Glucose_e0', 'H+_e0', 'Nitrite_e0')) # TODO: Find a way to get the metabolite names from the media dataframe
+ax.legend(('D-Glucose_e0', 'H+_e0')) # TODO: Find a way to get the metabolite names from the media dataframe
 ax.set_ylabel("Concentration (mmol)")
 
 # Save the media plot
@@ -77,7 +77,7 @@ plt.savefig(os.path.join(output_folder, 'media.png'))
 # CUE
 ########################################################################
 # Load the model (Needed to get the exchange reactions)
-alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-core-model/core_314275.5_GP.SBML/core_314275.5_GP.xml")
+alt_cobra = cobra.io.load_json_model("../../GEM-repos/mit1002-core-model/model.json")
 
 # Get the exchange reactions for the E coli core model
 # I think I would rather do this in the comets_simulation script, and
