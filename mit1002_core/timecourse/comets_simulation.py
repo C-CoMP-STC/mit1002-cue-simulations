@@ -10,23 +10,19 @@ import pickle
 # Create empty 1x1 layout
 test_tube = c.layout()
 
-# Add compounds in "Glucose minimal media from the SI file"
 # Set glucose os 0.011, everything else as 1000
-test_tube.set_specific_metabolite('cpd00027_e0', 0.011) # D-Glucose_e0 (from name field)
+test_tube.set_specific_metabolite('cpd00027_e0', 0.011) # D-Glucose_e0
 
 # Add plenty of oxygen
 test_tube.set_specific_metabolite('cpd00007_e0', 1000) # O2_e0
 
-# Add the rest of nutrients unlimited (ammonia, phosphate, water and protons)
-# test_tube.set_specific_metabolite('nh4_e',1000); # There was no ammonia in the model?
-# So I added nitrate instead
-test_tube.set_specific_metabolite('cpd00209_e0',1000); # Nitrate_e0
+# Add the of the nutrients available from MBM as unlimited (phosphate, water and protons)
 test_tube.set_specific_metabolite('cpd00009_e0',1000); # Phosphate_e0
 test_tube.set_specific_metabolite('cpd00001_e0',1000); # H2O_e0
 test_tube.set_specific_metabolite('cpd00067_e',1000); # H+_e0
 
 # create the model using CobraPy functionality
-alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-core-model/core_314275.5_GP.SBML/core_314275.5_GP.xml")
+alt_cobra = cobra.io.load_json_model("../../GEM-repos/mit1002-core-model/model.json")
 
 # Change the objective of the COBRA model
 # Not sure if that will cary over to the COMETS model, but trying it
@@ -36,8 +32,8 @@ alt_cobra.objective = "bio1_biomass"
 alt = c.model(alt_cobra)
 
 # remove the bounds from glucose import (will be set dynamically by COMETS)
-alt.change_bounds('EX_glc__D_e', -1000, 1000) # FIXME: Do I need to change the name to be the KBase ID?
-alt.change_bounds('EX_ac_e', -1000, 1000)
+alt.change_bounds('EX_cpd00027_e0', -1000, 1000)
+alt.change_bounds('EX_cpd00029_e0', -1000, 1000)
 
 # set the model's initial biomass
 alt.initial_pop = [0, 0, 5e-6]
@@ -66,6 +62,6 @@ experiment = c.comets(test_tube, sim_params)
 experiment.run()
 
 # Save the results
-with open('alt_core/results.pkl', 'wb') as f:
+with open('mit1002_core/timecourse/results.pkl', 'wb') as f:
     pickle.dump(experiment, f)
 
