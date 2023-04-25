@@ -14,7 +14,7 @@ test_tube = c.layout()
 test_tube.set_specific_metabolite('cpd00027_e0', 0.011) # D-Glucose_e0
 
 # Add a limiting amount of oxygen- not sure the exact amount I should use
-test_tube.set_specific_metabolite('cpd00007_e0', 8) # O2_e0
+test_tube.set_specific_metabolite('cpd00007_e0', 2) # O2_e0
 
 # Add the of the nutrients available from MBM as unlimited (phosphate, water and protons)
 test_tube.set_specific_metabolite('cpd00009_e0',1000); # Phosphate_e0
