@@ -67,7 +67,7 @@ media = media[media.conc_mmol<900]
 
 fig, ax = plt.subplots()
 media.groupby('metabolite').plot(x='cycle', ax =ax, y='conc_mmol')
-ax.legend(('D-Glucose_e0', 'H+_e0')) # TODO: Find a way to get the metabolite names from the media dataframe
+ax.legend(('Oxygen', 'D-Glucose_e0', 'H+_e0')) # TODO: Find a way to get the metabolite names from the media dataframe
 ax.set_ylabel("Concentration (mmol)")
 
 # Save the media plot
