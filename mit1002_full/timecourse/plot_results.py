@@ -141,7 +141,7 @@ respiration = []
 exudation = []
 other = []
 for index, row in fluxes.iterrows():
-    cycle_resp, cycle_ex, cycle_other = extract_c_fates(row, c_ex_rxns)
+    cycle_resp, cycle_ex, cycle_other = extract_c_fates(row,c_ex_rxns, co2_ex_rxn='EX_cpd00011_e0')
     respiration.append(cycle_resp)
     exudation.append(cycle_ex)
     other.append(cycle_other)
