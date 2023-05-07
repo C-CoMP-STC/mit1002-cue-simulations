@@ -103,7 +103,7 @@ cue_list = []
 gge_list = []
 # Loop through each cycle and calculate the CUE and the GGE
 for index, row in fluxes.iterrows():
-    cue_list.append(calculate_cue(row, c_ex_rxns, resp_rxn = "EX_cpd00011_e0"))
+    cue_list.append(calculate_cue(row, c_ex_rxns, co2_ex_rxn = "EX_cpd00011_e0"))
     gge_list.append(calculate_gge(row, c_ex_rxns))
 
 # Plot the CUE for each cycle
