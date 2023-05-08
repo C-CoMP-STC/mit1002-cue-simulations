@@ -48,6 +48,9 @@ alt.obj_style = 'MAX_OBJECTIVE_MIN_TOTAL'
 alt.change_bounds('EX_cpd00027_e0', -1000, 1000)
 alt.change_bounds('EX_cpd00029_e0', -1000, 1000)
 
+# Remove the ability to import or export protons
+alt.change_bounds('EX_cpd00067_e0', 0, 0)
+
 # set the model's initial biomass
 alt.initial_pop = [0, 0, 5e-6]
 
