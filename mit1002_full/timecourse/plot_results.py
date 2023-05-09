@@ -37,6 +37,10 @@ with open('mit1002_full/timecourse/results.pkl', 'rb') as f:
 ax = experiment.total_biomass.plot(x = 'cycle')
 ax.set_ylabel("Biomass (gr.)")
 
+# Convert the x ticks to hours by dividing by 100
+ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
+ax.set_xlabel("Time (hours)")
+
 # Save the biomass plot
 plt.savefig(os.path.join(output_folder, 'biomass.png'))
 
@@ -45,14 +49,20 @@ plt.savefig(os.path.join(output_folder, 'biomass.png'))
 ########################################################################
 # Plot the fluxes over time
 # The model doesn't have a name, it is just called ''
-experiment.fluxes_by_species[''].plot(x="cycle", # FIXME: Add an ID to the model file
+ax = experiment.fluxes_by_species[''].plot(x="cycle", # FIXME: Add an ID to the model file
                                       y=["EX_cpd00007_e0", # EX_o2_e
                                          "EX_cpd00011_e0", # EX_co2_e
                                          "EX_cpd00027_e0", # Glucose
                                          "EX_cpd00029_e0"], # Acetate 
                                       kind="line")
+
+# Convert the x ticks to hours by dividing by 100
+ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
+ax.set_xlabel("Time (hours)")
+
 # Make a more human-friendly legend
 plt.legend(('O2 Exchange', 'CO2 Exchange', 'Glucose Exchange', 'Acetate Exchange'))
+
 # Save the biomass plot
 plt.savefig(os.path.join(output_folder, 'fluxes.png'))
 
@@ -74,7 +84,11 @@ for name, group in media.groupby('metabolite'):
                label=alt_cobra.metabolites.get_by_id(name).name)
 ax.set_ylabel("Concentration (mmol)")
 
-# Save the media plot with the defulat y lims
+# Convert the x ticks to hours by dividing by 100
+ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
+ax.set_xlabel("Time (hours)")
+
+# Save the media plot with the default y lims
 plt.savefig(os.path.join(output_folder, 'media.png'))
 
 # Zoom in so I can see what the low metabolites are doing
@@ -114,8 +128,9 @@ fig, ax = plt.subplots()
 plt.plot(cycle_list, cue_list, label = "CUE")
 ax.set_ylabel("Value")
 # ax.set_ylim(0, 1) # Would need to increase the upper limit so that the line is visible
-ax.set_xlabel("Cycle")
-ax.set_xlim(0, 600) # TODO: Remove magic number
+ax.set_xlim(0, max(cycle_list))
+ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
+ax.set_xlabel("Time (hours)")
 plt.legend()
 
 plt.savefig(os.path.join(output_folder, 'cue.png'))
@@ -125,9 +140,9 @@ fig, ax = plt.subplots()
 plt.plot(cycle_list, cue_list, label = "CUE")
 plt.plot(cycle_list, gge_list, '--', label = "GGE") # Dashed line so you can see that the two are directly on top of one another
 ax.set_ylabel("Value")
-ax.set_xlabel("Cycle")
-# ax.set_ylim(0, 1) # Would need to increase the upper limit so that the lines are visible
-ax.set_xlim(0, 600)
+ax.set_xlim(0, max(cycle_list))
+ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
+ax.set_xlabel("Time (hours)")
 plt.legend()
 
 plt.savefig(os.path.join(output_folder, 'cue_gge.png'))
@@ -153,7 +168,8 @@ ax.bar(cycle_list, other, label='Biomass')
 ax.bar(cycle_list, exudation, bottom=other, label='Exudation')
 ax.bar(cycle_list, respiration, bottom=np.array(other)+np.array(exudation), label='Respiration')
 plt.ylabel('Propotion of Uptaken Carbon')
-plt.xlabel('Cycle')
+ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
+ax.set_xlabel("Time (hours)")
 plt.title('Carbon Fates at Each Cycle')
 plt.legend()
 

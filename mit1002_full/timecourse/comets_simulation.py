@@ -10,8 +10,11 @@ import pickle
 # Create empty 1x1 layout
 test_tube = c.layout()
 
-# Set glucose os 0.011, everything else as 1000
-test_tube.set_specific_metabolite('cpd00027_e0', 0.011) # D-Glucose_e0
+# Set glucose os 0.012, everything else as 1000
+# I chose 0.012 because that is equivalent to what Zac used in the lab
+# He used 12 mmol/L carbon, and I am modeling 1 mL of media, so 12 mmol/L
+# * (0.1L/100 mL) = 0.012 mmol/mL
+test_tube.set_specific_metabolite('cpd00027_e0', 0.012) # D-Glucose_e0, in mmol
 
 # Add a limiting amount of oxygen- not sure the exact amount I should use
 test_tube.set_specific_metabolite('cpd00007_e0', 2) # O2_e0
@@ -49,6 +52,7 @@ alt.change_bounds('EX_cpd00027_e0', -1000, 1000)
 alt.change_bounds('EX_cpd00029_e0', -1000, 1000)
 
 # set the model's initial biomass
+# Zac's plot only had OD, so I don't know what the initial biomass should be
 alt.initial_pop = [0, 0, 5e-6]
 
 # add it to the test_tube
@@ -61,8 +65,8 @@ sim_params.set_param('defaultVmax', 18.5)
 # Set a different Vmax for just the oxygen exchange reaction
 alt.change_vmax('EX_cpd00007_e0', 1)
 sim_params.set_param('defaultKm', 0.000015)
-sim_params.set_param('maxCycles', 600)
-sim_params.set_param('timeStep', 0.01)
+sim_params.set_param('maxCycles', 2500) # To get a total of 25 hours
+sim_params.set_param('timeStep', 0.01) # In hours
 sim_params.set_param('spaceWidth', 1)
 sim_params.set_param('maxSpaceBiomass', 10)
 sim_params.set_param('minSpaceBiomass', 1e-11)
