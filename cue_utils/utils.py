@@ -119,16 +119,23 @@ def get_org_c_secretion(secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
     return org_c_secretion_flux
 
 
-def get_c_uptake():
-    """Get the total number of organic carbon atoms taken up
+def get_c_uptake(uptake_fluxes):
+    """Get the total number of organic carbon atoms taken up. Would
+    include CO2 if that is taken up.
 
     Args:
-    
+    secretion_fluxes (dict): Dictionary of carbon importing reactions
+        with the reaction ID and the absolute value of the carbon atom
+        flux
 
     Returns:
-    
+    uptake_flux (float): Numeric value for the total carbon atom flux
+        for all import reactions
     """
-    pass
+    secretion_flux = sum([c_atom_flux
+                          for rxn, c_atom_flux in uptake_fluxes.items()])
+
+    return secretion_flux
 
 
 def get_biomass_carbon():
