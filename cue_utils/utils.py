@@ -77,21 +77,50 @@ def get_c_ex_rxn_fluxes(solution, c_ex_rxns, tool_used):
 
     return uptake, secretion
 
-def get_co2_release():
+def get_co2_secretion(secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
     """Get the total number of carbon atoms lost from the cell as CO2
 
     Args:
-    
+    secretion_fluxes (dict): Dictionary of carbon secreting reactions
+        with the reaction ID and the absolute value of the carbon atom
+        flux
+    co2_ex_rxn (str): Reaction ID for the CO2 exchange reaction.
+        Defaults to the BiGG ID 'EX_co2_e'.
 
     Returns:
+    co2_flux (float): Numeric value for the carbon atom flux for CO2
+        secretion
     
     """
-    pass
+    co2_flux = secretion_fluxes[co2_ex_rxn]
+
+    return co2_flux
 
 
-def get_org_c_release():
+def get_org_c_secretion(secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
     """Get the total number of carbon atoms lost from the cell as
     organic carbon
+
+    Args:
+    secretion_fluxes (dict): Dictionary of carbon secreting reactions
+        with the reaction ID and the absolute value of the carbon atom
+        flux
+    co2_ex_rxn (str): Reaction ID for the CO2 exchange reaction.
+        Defaults to the BiGG ID 'EX_co2_e'.
+
+    Returns:
+    org_c_secretion_flux (float): Numeric value for the carbon atom flux
+        for all secretion reactions other than CO2.
+    """
+    org_c_secretion_flux = sum([c_atom_flux
+                                for rxn, c_atom_flux in secretion_fluxes.items()
+                                if rxn != co2_ex_rxn])
+
+    return org_c_secretion_flux
+
+
+def get_c_uptake():
+    """Get the total number of organic carbon atoms taken up
 
     Args:
     
@@ -104,18 +133,6 @@ def get_org_c_release():
 
 def get_biomass_carbon():
     """Get the total number of carbon atoms used by the biomass reaction
-
-    Args:
-    
-
-    Returns:
-    
-    """
-    pass
-
-
-def get_c_uptake():
-    """Get the total number of organic carbon atoms taken up
 
     Args:
     
