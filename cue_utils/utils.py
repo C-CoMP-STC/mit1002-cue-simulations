@@ -35,6 +35,8 @@ def get_c_ex_rxn_fluxes(solution, c_ex_rxns, tool_used):
 
 
     Returns:
+    uptake (dict):
+    secretion (dict):
     
     """
     # Check that the tool used matches with the expected type of the
@@ -58,10 +60,10 @@ def get_c_ex_rxn_fluxes(solution, c_ex_rxns, tool_used):
     # Make a dictionary of all carbon atom fluxes (reaction flux * number of
     # carbon atoms). Have to access the fluxes differently if the results are
     # from COMETS or COBRApy.
-    if tool_used.lower == 'comets':
+    if tool_used.lower() == 'comets':
         c_ex_fluxes = {rxn_id: float(solution[rxn_id]) * n_atoms
                        for rxn_id, n_atoms in c_ex_rxns.items()}
-    if tool_used.lower == 'cobrapy':
+    if tool_used.lower() == 'cobrapy':
         c_ex_fluxes = {rxn_id: solution.fluxes[rxn_id] * n_atoms
                        for rxn_id, n_atoms in c_ex_rxns.items()}
     
@@ -132,10 +134,10 @@ def get_c_uptake(uptake_fluxes):
     uptake_flux (float): Numeric value for the total carbon atom flux
         for all import reactions
     """
-    secretion_flux = sum([c_atom_flux
-                          for rxn, c_atom_flux in uptake_fluxes.items()])
+    uptake_flux = sum([c_atom_flux
+                       for rxn, c_atom_flux in uptake_fluxes.items()])
 
-    return secretion_flux
+    return uptake_flux
 
 
 def get_biomass_carbon():
@@ -150,13 +152,17 @@ def get_biomass_carbon():
     pass
 
 
-def calculate_cue(row, c_ex_rxns, co2_ex_rxn = 'EX_co2_e'):
-    # TODO: Document this function
-    # Get the exchange fluxes for the current cycle
-    c_ex_fluxes = [float(row[r]) * -c for r, c in c_ex_rxns.items()]
-    # Calculate the CUE for the current cycle and add it to the cue array
-    uptake = sum([flux for flux in c_ex_fluxes if flux > 0])
-    co2_ex = row[co2_ex_rxn]
+def calculate_cue(uptake_fluxes, secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
+    """Calculate the CUE by using the uptake and secretion dictionaries
+
+    Args:
+    
+
+    Returns:
+    
+    """
+    uptake = get_c_uptake(uptake_fluxes)
+    co2_ex = get_co2_secretion(secretion_fluxes, co2_ex_rxn)
     if uptake == 0:
         cue = None
     else:
@@ -165,17 +171,23 @@ def calculate_cue(row, c_ex_rxns, co2_ex_rxn = 'EX_co2_e'):
     return cue
 
 
-def calculate_gge(row, c_ex_rxns):
-    # TODO: Document this function
-    # Get the exchange fluxes for the current cycle
-    c_ex_fluxes = [float(row[r]) * -c for r, c in c_ex_rxns.items()]
-    # Calculate the CUE for the current cycle and add it to the cue array
-    uptake = sum([flux for flux in c_ex_fluxes if flux > 0])
-    release = sum([flux for flux in c_ex_fluxes if flux < 0])
+def calculate_gge(uptake_fluxes, secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
+    """Calculate the GGE by using the uptake and secretion dictionaries
+
+    Args:
+    
+
+    Returns:
+    
+    """
+    uptake = get_c_uptake(uptake_fluxes)
+    co2_ex = get_co2_secretion(secretion_fluxes, co2_ex_rxn)
+    org_c_ex = get_org_c_secretion(secretion_fluxes, co2_ex_rxn)
+    release = co2_ex + org_c_ex
     if uptake == 0:
         gge = None
     else:
-        gge = 1 + release/uptake
+        gge = 1 - release/uptake
     
     return gge
 

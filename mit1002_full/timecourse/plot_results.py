@@ -10,8 +10,8 @@ import pickle
 # repository
 import sys
 sys.path.insert(0, 'cue_utils')
-from utils import (
-                   atomExchangeMetabolite,
+from utils import (get_c_ex_rxns,
+                   get_c_ex_rxn_fluxes,
                    calculate_cue,
                    calculate_gge,
                    extract_c_fates)
@@ -107,7 +107,7 @@ plt.savefig(os.path.join(output_folder, 'media-zoom-in.png'))
 # I think I would rather do this in the comets_simulation script, and
 # save the exchange reactions with the results, but for now just do it
 # here
-c_ex_rxns = atomExchangeMetabolite(alt_cobra, ex_nomenclature = {'e0'})
+c_ex_rxns = get_c_ex_rxns(alt_cobra)
 
 # Get the fluxes for each exchange reaction for each cycle of the
 # experiment
@@ -117,8 +117,12 @@ cue_list = []
 gge_list = []
 # Loop through each cycle and calculate the CUE and the GGE
 for index, row in fluxes.iterrows():
-    cue_list.append(calculate_cue(row, c_ex_rxns, co2_ex_rxn = "EX_cpd00011_e0"))
-    gge_list.append(calculate_gge(row, c_ex_rxns))
+    uptake_fluxes, secretion_fluxes = get_c_ex_rxn_fluxes(row, c_ex_rxns,
+                                                          'COMETS')
+    cue_list.append(calculate_cue(uptake_fluxes, secretion_fluxes,
+                                  co2_ex_rxn = "EX_cpd00011_e0"))
+    gge_list.append(calculate_gge(uptake_fluxes, secretion_fluxes,
+                                  co2_ex_rxn = "EX_cpd00011_e0"))
 
 # Plot the CUE for each cycle
 cycle_list = experiment.fluxes_by_species['']['cycle'].tolist()
