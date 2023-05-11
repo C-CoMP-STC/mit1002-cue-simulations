@@ -126,7 +126,7 @@ def get_c_uptake(uptake_fluxes):
     include CO2 if that is taken up.
 
     Args:
-    secretion_fluxes (dict): Dictionary of carbon importing reactions
+    uptake_fluxes (dict): Dictionary of carbon importing reactions
         with the reaction ID and the absolute value of the carbon atom
         flux
 
@@ -156,9 +156,17 @@ def calculate_cue(uptake_fluxes, secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
     """Calculate the CUE by using the uptake and secretion dictionaries
 
     Args:
-    
+    uptake_fluxes (dict): Dictionary of carbon importing reactions
+        with the reaction ID and the absolute value of the carbon atom
+        flux
+    secretion_fluxes (dict): Dictionary of carbon secreting reactions
+        with the reaction ID and the absolute value of the carbon atom
+        flux
+    co2_ex_rxn (str): Reaction ID for the CO2 exchange reaction.
+        Defaults to the BiGG ID 'EX_co2_e'.
 
     Returns:
+    cue (float): CUE value
     
     """
     uptake = get_c_uptake(uptake_fluxes)
@@ -175,10 +183,17 @@ def calculate_gge(uptake_fluxes, secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
     """Calculate the GGE by using the uptake and secretion dictionaries
 
     Args:
-    
+    uptake_fluxes (dict): Dictionary of carbon importing reactions
+        with the reaction ID and the absolute value of the carbon atom
+        flux
+    secretion_fluxes (dict): Dictionary of carbon secreting reactions
+        with the reaction ID and the absolute value of the carbon atom
+        flux
+    co2_ex_rxn (str): Reaction ID for the CO2 exchange reaction.
+        Defaults to the BiGG ID 'EX_co2_e'.
 
     Returns:
-    
+    gge (float): GGE value
     """
     uptake = get_c_uptake(uptake_fluxes)
     co2_ex = get_co2_secretion(secretion_fluxes, co2_ex_rxn)
