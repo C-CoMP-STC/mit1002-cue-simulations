@@ -1,4 +1,7 @@
-def atomExchangeMetabolite(model, atom = 'C', ex_nomenclature = {'e'}):
+import pandas as pd
+import cobra
+
+def get_c_ex_rxns(model, atom = 'C'):
     # TODO: Infer the ex_nomenclature rather than forcing the user to provide it
     """Get number of carbon atoms associated with each exchange reaction
 
@@ -18,6 +21,109 @@ def atomExchangeMetabolite(model, atom = 'C', ex_nomenclature = {'e'}):
                 if atom in ex_rxn.reactants[0].elements}
 
     return ex_atoms
+
+
+def get_c_ex_rxn_fluxes(solution, c_ex_rxns, tool_used):
+    """Use the list of dictionary of exchange reactions to make a
+    two dictionaries of reactions and the number of carbon atoms
+    exchanged (the flux times the number of carbon atoms in the
+    metabolite). Makes one dictionary for uptake exchanges and another
+    dictionary for secretion excahnges.
+
+    Args:
+    solution (pd.Series OR cobra.Solution): Results from FBA
+
+
+    Returns:
+    
+    """
+    # Check that the tool used matches with the expected type of the
+    # solution object
+    if tool_used.lower() != 'comets' and tool_used.lower() != 'cobrapy':
+        raise ValueError('Function does not recognize the value supplied ' +
+                         'for `tool_used`. Select from `COMETS` or `COBRApy`' +
+                         ' (capitalization does not matter). You supplied ' +
+                         tool_used + '.')
+    if tool_used.lower() == 'comets' and not isinstance(solution, pd.Series):
+        raise ValueError('Function was expecting results from a COMETS' +
+                         'simulation as a pandas.Series object, but was ' +
+                         'given the solution as a ' + type(solution) +
+                         'object.')
+    if tool_used.lower() == 'cobrapy' and not isinstance(solution, cobra.Solution):
+        raise ValueError('Function was expecting results from a COBRApy' +
+                         'simulation as a cobra.Solution object, but was ' +
+                         'given the solution as a ' + type(solution) +
+                         'object.')
+    
+    # Make a dictionary of all carbon atom fluxes (reaction flux * number of
+    # carbon atoms). Have to access the fluxes differently if the results are
+    # from COMETS or COBRApy.
+    if tool_used.lower == 'comets':
+        c_ex_fluxes = {rxn_id: float(solution[rxn_id]) * n_atoms
+                       for rxn_id, n_atoms in c_ex_rxns.items()}
+    if tool_used.lower == 'cobrapy':
+        c_ex_fluxes = {rxn_id: solution.fluxes[rxn_id] * n_atoms
+                       for rxn_id, n_atoms in c_ex_rxns.items()}
+    
+    # Set the signs for the uptake and secretion
+    
+    # Separate the uptake and secretion fluxes based on the sign
+    uptake = {rxn_id: abs(atom_flux)
+              for rxn_id, atom_flux in c_ex_fluxes.items()
+              if atom_flux < 0}
+    secretion = {rxn_id: abs(atom_flux)
+                 for rxn_id, atom_flux in c_ex_fluxes.items()
+                 if atom_flux > 0}
+
+    return uptake, secretion
+
+def get_co2_release():
+    """Get the total number of carbon atoms lost from the cell as CO2
+
+    Args:
+    
+
+    Returns:
+    
+    """
+    pass
+
+
+def get_org_c_release():
+    """Get the total number of carbon atoms lost from the cell as
+    organic carbon
+
+    Args:
+    
+
+    Returns:
+    
+    """
+    pass
+
+
+def get_biomass_carbon():
+    """Get the total number of carbon atoms used by the biomass reaction
+
+    Args:
+    
+
+    Returns:
+    
+    """
+    pass
+
+
+def get_c_uptake():
+    """Get the total number of organic carbon atoms taken up
+
+    Args:
+    
+
+    Returns:
+    
+    """
+    pass
 
 
 def calculate_cue(row, c_ex_rxns, co2_ex_rxn = 'EX_co2_e'):
