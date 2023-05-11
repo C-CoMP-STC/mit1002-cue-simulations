@@ -32,7 +32,8 @@ def get_c_ex_rxn_fluxes(solution, c_ex_rxns, tool_used):
 
     Args:
     solution (pd.Series OR cobra.Solution): Results from FBA
-
+    tool_used (str): Which tool was used to run FBA. Options are
+        "COMETS" or "COBRApy" (Capitalization does not matter).
 
     Returns:
     uptake (dict):
@@ -94,7 +95,10 @@ def get_co2_secretion(secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
         secretion
     
     """
-    co2_flux = secretion_fluxes[co2_ex_rxn]
+    if co2_ex_rxn not in secretion_fluxes.keys():
+        co2_flux = 0
+    else:
+        co2_flux = secretion_fluxes[co2_ex_rxn]
 
     return co2_flux
 
@@ -140,16 +144,63 @@ def get_c_uptake(uptake_fluxes):
     return uptake_flux
 
 
-def get_biomass_carbon():
+def get_biomass_carbon(solution, biomass_rxn, model, tool_used = 'COMETS'):
     """Get the total number of carbon atoms used by the biomass reaction
 
     Args:
-    
+    solution (pd.Series OR cobra.Solution): Results from FBA
+    biomass_rxn (str): Reaction ID for the biomass reaction
+    model (cobra.Model): COBRA model used
+    tool_used (str): Which tool was used to run FBA. Options are
+        "COMETS" or "COBRApy" (Capitalization does not matter).
 
     Returns:
     
     """
-    pass
+    # Check that the tool used matches with the expected type of the
+    # solution object
+    if tool_used.lower() != 'comets' and tool_used.lower() != 'cobrapy':
+        raise ValueError('Function does not recognize the value supplied ' +
+                         'for `tool_used`. Select from `COMETS` or `COBRApy`' +
+                         ' (capitalization does not matter). You supplied ' +
+                         tool_used + '.')
+    if tool_used.lower() == 'comets' and not isinstance(solution, pd.Series):
+        raise ValueError('Function was expecting results from a COMETS' +
+                         'simulation as a pandas.Series object, but was ' +
+                         'given the solution as a ' + type(solution) +
+                         'object.')
+    if tool_used.lower() == 'cobrapy' and not isinstance(solution, cobra.Solution):
+        raise ValueError('Function was expecting results from a COBRApy' +
+                         'simulation as a cobra.Solution object, but was ' +
+                         'given the solution as a ' + type(solution) +
+                         'object.')
+
+    # Get the flux through the biomass reaction
+    if tool_used.lower() == 'comets':
+        rxn_flux = solution[biomass_rxn]
+    if tool_used.lower() == 'cobrapy':
+        rxn_flux = solution.fluxes[biomass_rxn]
+
+    # Get the actual reaction object for the biomass reaction
+    rxn_obj = model.reactions.get_by_id(biomass_rxn)
+
+    c_atom_flux = 0
+    # Loop through all of the biomass components
+    for component, s_coeff in rxn_obj.metabolites.items():
+        print('--------------\n' + component.name + '\nCoeff: ' + str(s_coeff))
+        # If the component does not contain carbon, skip it
+        if 'C' not in component.elements.keys():
+            continue
+        # Get the number of carbon atoms in the component
+        n_c_atoms = component.elements['C']
+        print('num. C atoms: ' + str(n_c_atoms))
+        # Multiply the number of carbon atoms by the stoichiometric coefficient
+        component_flux = n_c_atoms * s_coeff
+        # Add the flux to the total c_atom_flux
+        c_atom_flux += component_flux
+        print('new atom flux: ' + str(c_atom_flux))
+
+    return abs(c_atom_flux)
 
 
 def calculate_cue(uptake_fluxes, secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
@@ -207,30 +258,52 @@ def calculate_gge(uptake_fluxes, secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
     return gge
 
 
-def extract_c_fates(row, c_ex_rxns, co2_ex_rxn = 'EX_co2_e', norm = True):
-    # TODO: Document this function
-    # Get the exchange fluxes for the current cycle
-    c_ex_fluxes = {r: float(row[r]) * -c for r, c in c_ex_rxns.items()}
-    # Use the exchange fluxes to calculate uptake, resp, and exudation
-    uptake = sum([flux for rxn, flux in c_ex_fluxes.items() if flux > 0])
-    co2_ex = abs(c_ex_fluxes[co2_ex_rxn])
-    exudation = abs(sum([flux for rxn, flux in c_ex_fluxes.items()
-                         if flux < 0 and rxn != co2_ex_rxn]))
-    # Calculate the biomass as everything that is not uptake or co2_ex
-    biomass = uptake - co2_ex - exudation
+def extract_c_fates(secretion_fluxes, uptake_fluxes = None,
+                    co2_ex_rxn = 'EX_co2_e',
+                    norm = False):
+    """Extract the carbon atom flux going to each possible destination.
+    These fluxes can the absolute value or can be normalized to the
+    uptake flux.
+    
+    Args:
+    secretion_fluxes (dict): Dictionary of carbon secreting reactions
+        with the reaction ID and the absolute value of the carbon atom
+        flux
+    uptake_fluxes (dict): Dictionary of carbon importing reactions
+        with the reaction ID and the absolute value of the carbon atom
+        flux
+    co2_ex_rxn (str): Reaction ID for the CO2 exchange reaction.
+        Defaults to the BiGG ID 'EX_co2_e'.
+    norm (bool): Do you want the flues to be normalized to the uptake
+        flux? Defaults to false.
+
+    Returns:
+    
+    """
+    # If you want normalized fates, you must supply the uptake flux dictionary
+    if norm == True and uptake_fluxes is None:
+        raise ValueError('In order to calculate normalized carbon fates, ' +
+                         'you must supple an uptake flux dictionary.')
+
+    # Get the absolute values for the fate fluxes
+    co2_ex = get_co2_secretion(secretion_fluxes, co2_ex_rxn)
+    org_c_ex = get_org_c_secretion(secretion_fluxes, co2_ex_rxn)
+    biomass_c = get_biomass_carbon()
+    
     # Normalize everything to the uptake or not
     if norm == True:
+        uptake = get_c_uptake(uptake_fluxes)
         if uptake == 0:
             exudation_norm = 0
             co2_ex_norm = 0
             biomass_norm = 0
         else:
             co2_ex_norm = co2_ex/uptake
-            exudation_norm = exudation/uptake
-            biomass_norm = biomass/uptake
+            exudation_norm = org_c_ex/uptake
+            biomass_norm = biomass_c/uptake
         return [co2_ex_norm, exudation_norm, biomass_norm]
     else:
-        return [co2_ex, exudation, biomass]
+        return [co2_ex, org_c_ex, biomass_c]
 
 
 def extract_c_fates_from_solution(solution, c_ex_rxns, co2_ex_rxn = 'EX_co2_e', norm = True):

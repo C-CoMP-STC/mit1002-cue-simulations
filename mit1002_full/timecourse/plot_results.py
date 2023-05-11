@@ -12,9 +12,13 @@ import sys
 sys.path.insert(0, 'cue_utils')
 from utils import (get_c_ex_rxns,
                    get_c_ex_rxn_fluxes,
+                   get_biomass_carbon,
                    calculate_cue,
                    calculate_gge,
-                   extract_c_fates)
+                   extract_c_fates,
+                   get_co2_secretion,
+                   get_org_c_secretion,
+                   get_c_uptake)
 
 # Set a folder for the plots
 # Assuming you are running from the root of the repository
@@ -156,22 +160,34 @@ plt.savefig(os.path.join(output_folder, 'cue_gge.png'))
 # Different from CUE- because it isn't just one value
 ########################################################################
 # Get the carbon fates for each cycle
+unaccounted = []
 respiration = []
 exudation = []
-other = []
+biomass = []
 for index, row in fluxes.iterrows():
-    cycle_resp, cycle_ex, cycle_other = extract_c_fates(row,c_ex_rxns, co2_ex_rxn='EX_cpd00011_e0')
-    respiration.append(cycle_resp)
-    exudation.append(cycle_ex)
-    other.append(cycle_other)
+    cycle_biomass = get_biomass_carbon(row, 'bio1_biomass', alt_cobra, 'COMETS')
+    uptake_fluxes, secretion_fluxes = get_c_ex_rxn_fluxes(row, c_ex_rxns,
+                                                          'COMETS')
+    cycle_uptake = get_c_uptake(uptake_fluxes)
+    cycle_co2 = get_co2_secretion(secretion_fluxes, 'EX_cpd00011_e0')
+    cycle_secretion = get_org_c_secretion(secretion_fluxes, 'EX_cpd00011_e0')
+
+    unaccounted.append(cycle_uptake - (cycle_co2 + cycle_secretion + cycle_biomass))
+    respiration.append(cycle_co2)
+    exudation.append(cycle_secretion)
+    biomass.append(cycle_biomass)
 
 # Plot 5: Plot bar chart of carbon fates for each cycle
 # width = 0.35
 fig, ax = plt.subplots()
-ax.bar(cycle_list, other, label='Biomass')
-ax.bar(cycle_list, exudation, bottom=other, label='Exudation')
-ax.bar(cycle_list, respiration, bottom=np.array(other)+np.array(exudation), label='Respiration')
-plt.ylabel('Propotion of Uptaken Carbon')
+ax.bar(cycle_list, biomass, label='Biomass')
+ax.bar(cycle_list, exudation, bottom=biomass, label='Organic C')
+ax.bar(cycle_list, respiration, bottom=np.array(biomass)+np.array(exudation),
+       label='CO2')
+ax.bar(cycle_list, unaccounted,
+       bottom=np.array(biomass)+np.array(exudation)+np.array(respiration),
+       label='Unaccounted')
+plt.ylabel('Carbon Atom Flux')
 ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
 ax.set_xlabel("Time (hours)")
 plt.title('Carbon Fates at Each Cycle')
