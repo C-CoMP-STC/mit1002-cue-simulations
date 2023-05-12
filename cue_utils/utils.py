@@ -200,7 +200,8 @@ def get_biomass_carbon(solution, biomass_rxn, model, tool_used = 'COMETS'):
         c_atom_flux += component_flux
         print('new atom flux: ' + str(c_atom_flux))
 
-    return abs(c_atom_flux)
+    # The final c atom flux is the 
+    return abs(c_atom_flux * rxn_flux)
 
 
 def calculate_cue(uptake_fluxes, secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
