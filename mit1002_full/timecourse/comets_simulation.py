@@ -37,9 +37,29 @@ test_tube.set_specific_metabolite('cpd00635_e0', 1000); # Cbl_e0
 test_tube.set_specific_metabolite('cpd00034_e0', 1000); # Zn2+_e0
 test_tube.set_specific_metabolite('cpd00149_e0', 1000); # Co2+_e0
 
-
-# create the model using CobraPy functionality
+# Load in the ALT model using COBRApy
 alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-model/model.xml")
+
+# Make the bounds on all of the ATP reactions so that no ATP can be produced
+metabolite_id = "cpd00002_c0" # (ATP)
+# Check if the metabolite exists in the model
+if metabolite_id in alt_cobra.metabolites:
+    metabolite = alt_cobra.metabolites.get_by_id(metabolite_id)
+else:
+    raise ValueError(f"Metabolite {metabolite_id} not found in the model.")
+# Find all reactions containing the metabolite
+reactions_with_metabolite = [reaction for reaction in alt_cobra.reactions if metabolite in reaction.metabolites]
+# Get all the reactions that can produce ATP
+for reaction in reactions_with_metabolite:
+    # If it is the ATPase reaction, skip it
+    if reaction.id == "rxn08173": # F(1)-ATPase_c0
+        continue
+    if metabolite in reaction.products:
+        # Set the upper bound to 0
+        reaction.upper_bound = 0
+    if metabolite in reaction.reactants:
+        # Set the lower bound to 0
+        reaction.lower_bound = 0
 
 # use the loaded model to build a comets model
 alt = c.model(alt_cobra)
@@ -63,7 +83,7 @@ sim_params = c.params()
 
 sim_params.set_param('defaultVmax', 18.5)
 # Set a different Vmax for just the oxygen exchange reaction
-alt.change_vmax('EX_cpd00007_e0', 1)
+alt.change_vmax('EX_cpd00007_e0', 10)
 sim_params.set_param('defaultKm', 0.000015)
 sim_params.set_param('maxCycles', 2500) # To get a total of 25 hours
 sim_params.set_param('timeStep', 0.01) # In hours
