@@ -54,9 +54,9 @@ for reaction in reactions_with_metabolite:
     # If it is the ATPase reaction, skip it
     if reaction.id == "rxn08173": # F(1)-ATPase_c0
         continue
-    if metabolite in reaction.products:
-        # Set the upper bound to 0
-        reaction.upper_bound = 0
+    # if metabolite in reaction.products:
+    #     # Set the upper bound to 0
+    #     reaction.upper_bound = 0.1
     if metabolite in reaction.reactants:
         # Set the lower bound to 0
         reaction.lower_bound = 0
