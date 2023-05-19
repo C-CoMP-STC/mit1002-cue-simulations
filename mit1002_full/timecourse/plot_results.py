@@ -101,7 +101,6 @@ ax.set_ylabel('OD600')
 ax.right_ax.set_ylabel('Biomass (gr.)')
 
 # Save the plot
-plt = ax.get_figure()
 plt.tight_layout()
 plt.savefig(os.path.join(output_folder, 'exp_vs_pred_biomass.png'))
 

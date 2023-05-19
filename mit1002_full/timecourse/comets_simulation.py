@@ -40,27 +40,6 @@ test_tube.set_specific_metabolite('cpd00149_e0', 1000); # Co2+_e0
 # Load in the ALT model using COBRApy
 alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-model/model.xml")
 
-# Make the bounds on all of the ATP reactions so that no ATP can be produced
-metabolite_id = "cpd00002_c0" # (ATP)
-# Check if the metabolite exists in the model
-if metabolite_id in alt_cobra.metabolites:
-    metabolite = alt_cobra.metabolites.get_by_id(metabolite_id)
-else:
-    raise ValueError(f"Metabolite {metabolite_id} not found in the model.")
-# Find all reactions containing the metabolite
-reactions_with_metabolite = [reaction for reaction in alt_cobra.reactions if metabolite in reaction.metabolites]
-# Get all the reactions that can produce ATP
-for reaction in reactions_with_metabolite:
-    # If it is the ATPase reaction, skip it
-    if reaction.id == "rxn08173": # F(1)-ATPase_c0
-        continue
-    # if metabolite in reaction.products:
-    #     # Set the upper bound to 0
-    #     reaction.upper_bound = 0.1
-    if metabolite in reaction.reactants:
-        # Set the lower bound to 0
-        reaction.lower_bound = 0
-
 # use the loaded model to build a comets model
 alt = c.model(alt_cobra)
 
