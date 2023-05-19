@@ -85,8 +85,8 @@ od.plot(x = 'Time',
         label = 'Experimental OD600')
 
 # Convert the cycles in the total biomass dataframe to hours by dividing
-# by 100
-experiment.total_biomass['Time'] = experiment.total_biomass['cycle']/100
+# by 100 and shift it to account for the lag phase
+experiment.total_biomass['Time'] = experiment.total_biomass['cycle']/100 + 4
 
 # Plot the FBA restul as Biomass on the secondary y axis
 experiment.total_biomass.plot(x = 'Time',
