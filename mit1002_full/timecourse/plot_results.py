@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pickle
+import pandas as pd
 
 # Import my own CUE functions
 # I want the CUE functions to eventually be their own package, but for
@@ -32,6 +33,10 @@ if not os.path.exists(output_folder):
 with open('mit1002_full/timecourse/results.pkl', 'rb') as f:
     experiment = pickle.load(f)
 
+# Path to Zac's results
+# Assuming you are running from the root of the repository
+results_path = '../Zac txt data/'
+
 ########################################################################
 # Biomass
 ########################################################################
@@ -47,6 +52,58 @@ ax.set_xlabel("Time (hours)")
 
 # Save the biomass plot
 plt.savefig(os.path.join(output_folder, 'biomass.png'))
+
+########################################################################
+# Experimental and Predicted Biomass
+########################################################################
+# Load the OD data
+od = pd.read_csv(os.path.join(results_path, 'MIT1002_singles_OD600.txt'),
+                 sep='\t')
+
+# Get the mean and double standard deviation of the OD for the replicates of
+# growth on glucose only
+od['glucose_mean'] = od[['MIT1002_glucose',
+                         'MIT1002_glucose.1',
+                         'MIT1002_glucose.2',
+                         'MIT1002_glucose.3',
+                         'MIT1002_glucose.4']].mean(axis=1)
+od['glucose_double_std'] = od[['MIT1002_glucose',
+                               'MIT1002_glucose.1',
+                               'MIT1002_glucose.2',
+                               'MIT1002_glucose.3',
+                               'MIT1002_glucose.4']].std(axis=1) * 2
+
+fig, ax = plt.subplots(figsize=(20,10)) 
+
+# Plot the OD data on one y axis, with the mean as a scatter plot and the
+# double standard deviation as error bars
+od.plot(x = 'Time',
+        y = 'glucose_mean',
+        kind='scatter',
+        yerr='glucose_double_std',
+        ax = ax,
+        label = 'Experimental OD600')
+
+# Convert the cycles in the total biomass dataframe to hours by dividing
+# by 100
+experiment.total_biomass['Time'] = experiment.total_biomass['cycle']/100
+
+# Plot the FBA restul as Biomass on the secondary y axis
+experiment.total_biomass.plot(x = 'Time',
+                              y = '', # Because the model doesn't have a name
+                              ax = ax,
+                              secondary_y = True,
+                              label = 'FBA Predicted Biomass')
+
+# Label the axes
+ax.set_xlabel('Time (hours)')
+ax.set_ylabel('OD600')
+ax.right_ax.set_ylabel('Biomass (gr.)')
+
+# Save the plot
+plt = ax.get_figure()
+plt.tight_layout()
+plt.savefig(os.path.join(output_folder, 'exp_vs_pred_biomass.png'))
 
 ########################################################################
 # Fluxes

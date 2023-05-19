@@ -13,6 +13,14 @@ if not os.path.exists(output_folder):
 # Assuming you are running from the root of the repository
 results_path = '../Zac txt data/'
 
+# Load the results needed to calculate CUE (cumulative CO2 and drawdown)
+cumulative_co2 = pd.read_csv(os.path.join(results_path,
+                                          'MIT1002_singles_cumulative.txt'),
+                             sep='\t')
+drawdown = pd.read_csv(os.path.join(results_path,
+                                    'MIT1002_singles_drawdown.txt'),
+                       sep='\t')
+
 ########################################################################
 # OD
 ########################################################################
