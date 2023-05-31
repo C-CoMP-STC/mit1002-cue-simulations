@@ -225,7 +225,7 @@ drawdown.columns = ['Time (hours)', 'Ac_D', 'Ac_E', 'Ac_F', 'Glc_A', 'Glc_B', 'G
 
 # Set the timepoints I am using
 drawdow_datapoints = [0, 3, 6, 9, 12]
-co2_datapoints = [0, 2.8233, 6.11715, 8.94045, 12.2343]
+co2_datapoints = [0, 3.29385, 6.11715, 8.94045, 12.2343]
 
 # Calculate the mean and standard deviation of the CUE foe each timepoint
 cue_means = []
@@ -242,8 +242,7 @@ for i in range(1,5):
         # Calculate the CUE for the current replicate
         if current_drawdown == 0:
             continue
-        # Multiply the drawdown by 6 to account for the 6 carbon atoms in the glucose
-        cues.append(1 - current_co2 / (current_drawdown * 6))
+        cues.append(1 - current_co2 / (current_drawdown))
 
     # Calcualte the mean and the standard deviation for all the replicate
     cue_means.append(np.mean(cues))
