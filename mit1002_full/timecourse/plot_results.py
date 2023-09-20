@@ -102,7 +102,7 @@ ax = experiment.fluxes_by_species[''].plot(x="cycle",  # FIXME: Add an ID to the
                                            y=["EX_cpd00007_e0",  # EX_o2_e
                                               "EX_cpd00011_e0",  # EX_co2_e
                                               "EX_cpd00027_e0",  # Glucose
-                                              "EX_cpd00029_e0"],  # Acetate 
+                                              "EX_cpd00029_e0"],  # Acetate
                                            kind="line")
 
 # Convert the x ticks to hours by dividing by 100
