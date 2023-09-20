@@ -8,24 +8,24 @@ import pickle
 # I want the CUE functions to eventually be their own package, but for
 # now I'm just importing them from a different folder in the same
 # repository
-import sys
-sys.path.insert(0, 'cue_utils')
-from utils import (
-                   atomExchangeMetabolite,
-                   calculate_cue,
-                   calculate_gge,
-                   extract_c_fates)
+# import sys
+# sys.path.insert(0, 'cue_utils')
+# from utils import (
+#                    atomExchangeMetabolite,
+#                    calculate_cue,
+#                    calculate_gge,
+#                    extract_c_fates)
 
 # Set a folder for the plots
 # Assuming you are running from the root of the repository
-output_folder = 'well_mixed_ecoli_core/plots'
+output_folder = 'ecoli_core/plots'
 
 # Check if the folder exists, if not, create it
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
 # Load the results
-with open('well_mixed_ecoli_core/results.pkl', 'rb') as f:
+with open('ecoli_core/timecourse/results.pkl', 'rb') as f:
     experiment = pickle.load(f)
 
 ########################################################################

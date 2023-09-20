@@ -17,10 +17,10 @@ test_tube.set_specific_metabolite('glc__D_e', 0.011)
 test_tube.set_specific_metabolite('o2_e', 1000)
 
 # Add the rest of nutrients unlimited (ammonia, phosphate, water and protons)
-test_tube.set_specific_metabolite('nh4_e',1000)
-test_tube.set_specific_metabolite('pi_e',1000)
-test_tube.set_specific_metabolite('h2o_e',1000)
-test_tube.set_specific_metabolite('h_e',1000)
+test_tube.set_specific_metabolite('nh4_e', 1000)
+test_tube.set_specific_metabolite('pi_e', 1000)
+test_tube.set_specific_metabolite('h2o_e', 1000)
+test_tube.set_specific_metabolite('h_e', 1000)
 
 # create the model using CobraPy functionality
 e_coli_cobra = cobra.io.load_model('textbook')
@@ -59,6 +59,5 @@ experiment = c.comets(test_tube, sim_params)
 experiment.run()
 
 # Save the results
-with open('well_mixed_ecoli_core/results.pkl', 'wb') as f:
+with open('ecoli_core/timecourse/results.pkl', 'wb') as f:
     pickle.dump(experiment, f)
-
