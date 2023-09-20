@@ -5,21 +5,7 @@ import os
 import pickle
 import pandas as pd
 
-# Import my own CUE functions
-# I want the CUE functions to eventually be their own package, but for
-# now I'm just importing them from a different folder in the same
-# repository
-import sys
-sys.path.insert(0, 'cue_utils')
-from utils import (get_c_ex_rxns,
-                   get_c_ex_rxn_fluxes,
-                   get_biomass_carbon,
-                   calculate_cue,
-                   calculate_gge,
-                   extract_c_fates,
-                   get_co2_secretion,
-                   get_org_c_secretion,
-                   get_c_uptake)
+from gem2cue import utils as gem2cue
 
 # Set the output directory (where the results.pkl file will be saved)
 OUT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -166,11 +152,14 @@ plt.savefig(os.path.join(output_folder, 'media-zoom-in.png'))
 # Need the model loaded to get the exchange reactions, already done
 # for the media plot
 
+# Need the biomass reaction ID to calculate the BGE
+biomass_rxn = 'bio1_biomass'
+
 # Get the exchange reactions for the E coli core model
 # I think I would rather do this in the comets_simulation script, and
 # save the exchange reactions with the results, but for now just do it
 # here
-c_ex_rxns = get_c_ex_rxns(alt_cobra)
+c_ex_rxns = gem2cue.get_c_ex_rxns(alt_cobra)
 
 # Get the fluxes for each exchange reaction for each cycle of the
 # experiment
@@ -178,14 +167,20 @@ fluxes = experiment.fluxes_by_species[''].copy()
 # Create an empty array to hold the CUE for each cycle
 cue_list = []
 gge_list = []
+bge_list = []
 # Loop through each cycle and calculate the CUE and the GGE
 for index, row in fluxes.iterrows():
-    uptake_fluxes, secretion_fluxes = get_c_ex_rxn_fluxes(row, c_ex_rxns,
-                                                          'COMETS')
-    cue_list.append(calculate_cue(uptake_fluxes, secretion_fluxes,
-                                  co2_ex_rxn="EX_cpd00011_e0"))
-    gge_list.append(calculate_gge(uptake_fluxes, secretion_fluxes,
-                                  co2_ex_rxn="EX_cpd00011_e0"))
+    u_fluxes, ex_fluxes, biomass_flux = gem2cue.get_c_ex_rxn_fluxes(alt_cobra,
+                                                                    row,
+                                                                    c_ex_rxns,
+                                                                    biomass_rxn,
+                                                                    'COMETS')
+    cue_list.append(gem2cue.calculate_cue(u_fluxes, ex_fluxes,
+                                          co2_ex_rxn="EX_cpd00011_e0"))
+    gge_list.append(gem2cue.calculate_gge(u_fluxes, ex_fluxes,
+                                          co2_ex_rxn="EX_cpd00011_e0"))
+    bge_list.append(gem2cue.calculate_bge(ex_fluxes, biomass_flux,
+                                          co2_ex_rxn="EX_cpd00011_e0"))
 
 # Plot the CUE for each cycle
 cycle_list = experiment.fluxes_by_species['']['cycle'].tolist()
@@ -202,10 +197,11 @@ plt.legend()
 
 plt.savefig(os.path.join(output_folder, 'cue.png'))
 
-# Plot 3: CUE and GGE for the whole experiment
+# Plot 2: CUE, GGE, and BGE for the whole experiment
 fig, ax = plt.subplots()
 plt.plot(cycle_list, cue_list, label="CUE")
-plt.plot(cycle_list, gge_list, '--', label="GGE")  # Dashed line so you can see that the two are directly on top of one another
+plt.plot(cycle_list, gge_list, '--', label="GGE")
+plt.plot(cycle_list, bge_list, ':', label="BGE")
 ax.set_ylabel("Value")
 ax.set_xlim(0, max(cycle_list))
 ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
