@@ -46,7 +46,7 @@ results_path = '../Zac txt data/'
 # Plot the biomass over time
 # Right now, can use total biomass because the simulation is only the E.
 # coli core model, but if I add other species, I will need to change
-ax = experiment.total_biomass.plot(x = 'cycle')
+ax = experiment.total_biomass.plot(x='cycle')
 ax.set_ylabel("Biomass (gr.)")
 
 # Convert the x ticks to hours by dividing by 100
@@ -80,23 +80,23 @@ fig, ax = plt.subplots(figsize=(20,10))
 
 # Plot the OD data on one y axis, with the mean as a scatter plot and the
 # double standard deviation as error bars
-od.plot(x = 'Time',
-        y = 'glucose_mean',
+od.plot(x='Time',
+        y='glucose_mean',
         kind='scatter',
         yerr='glucose_double_std',
-        ax = ax,
-        label = 'Experimental OD600')
+        ax=ax,
+        label='Experimental OD600')
 
 # Convert the cycles in the total biomass dataframe to hours by dividing
 # by 100 and shift it to account for the lag phase
 experiment.total_biomass['Time'] = experiment.total_biomass['cycle']/100 + 4
 
 # Plot the FBA restul as Biomass on the secondary y axis
-experiment.total_biomass.plot(x = 'Time',
-                              y = '', # Because the model doesn't have a name
-                              ax = ax,
-                              secondary_y = True,
-                              label = 'FBA Predicted Biomass')
+experiment.total_biomass.plot(x='Time',
+                              y='', # Because the model doesn't have a name
+                              ax=ax,
+                              secondary_y=True,
+                              label='FBA Predicted Biomass')
 
 # Label the axes
 ax.set_xlabel('Time (hours)')
@@ -112,12 +112,12 @@ plt.savefig(os.path.join(output_folder, 'exp_vs_pred_biomass.png'))
 ########################################################################
 # Plot the fluxes over time
 # The model doesn't have a name, it is just called ''
-ax = experiment.fluxes_by_species[''].plot(x="cycle", # FIXME: Add an ID to the model file
-                                      y=["EX_cpd00007_e0", # EX_o2_e
-                                         "EX_cpd00011_e0", # EX_co2_e
-                                         "EX_cpd00027_e0", # Glucose
-                                         "EX_cpd00029_e0"], # Acetate 
-                                      kind="line")
+ax = experiment.fluxes_by_species[''].plot(x="cycle",  # FIXME: Add an ID to the model file
+                                           y=["EX_cpd00007_e0",  # EX_o2_e
+                                              "EX_cpd00011_e0",  # EX_co2_e
+                                              "EX_cpd00027_e0",  # Glucose
+                                              "EX_cpd00029_e0"],  # Acetate 
+                                           kind="line")
 
 # Convert the x ticks to hours by dividing by 100
 ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
@@ -137,12 +137,12 @@ alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-model/model.xml")
 
 # Plot the media concentrations over time
 media = experiment.media.copy()
-media = media[media.conc_mmol<900]
+media = media[media.conc_mmol < 900]
 
 fig, ax = plt.subplots()
 for name, group in media.groupby('metabolite'):
     group.plot(x='cycle',
-               ax = ax,
+               ax=ax,
                y='conc_mmol',
                label=alt_cobra.metabolites.get_by_id(name).name)
 ax.set_ylabel("Concentration (mmol)")
@@ -157,7 +157,7 @@ plt.savefig(os.path.join(output_folder, 'media.png'))
 # Zoom in so I can see what the low metabolites are doing
 # FIXME: It still shows the legend of O2 which is confusing, maybe make
 # a new media df with a lower concentration threshold than 900
-ax.set_ylim(0, 0.022) # Can only get this number by actually looking at it
+ax.set_ylim(0, 0.022)  # Can only get this number by actually looking at it
 plt.savefig(os.path.join(output_folder, 'media-zoom-in.png'))
 
 ########################################################################
@@ -183,16 +183,16 @@ for index, row in fluxes.iterrows():
     uptake_fluxes, secretion_fluxes = get_c_ex_rxn_fluxes(row, c_ex_rxns,
                                                           'COMETS')
     cue_list.append(calculate_cue(uptake_fluxes, secretion_fluxes,
-                                  co2_ex_rxn = "EX_cpd00011_e0"))
+                                  co2_ex_rxn="EX_cpd00011_e0"))
     gge_list.append(calculate_gge(uptake_fluxes, secretion_fluxes,
-                                  co2_ex_rxn = "EX_cpd00011_e0"))
+                                  co2_ex_rxn="EX_cpd00011_e0"))
 
 # Plot the CUE for each cycle
 cycle_list = experiment.fluxes_by_species['']['cycle'].tolist()
 
 # Plot 1: CUE only
 fig, ax = plt.subplots()
-plt.plot(cycle_list, cue_list, label = "CUE")
+plt.plot(cycle_list, cue_list, label="CUE")
 ax.set_ylabel("Value")
 # ax.set_ylim(0, 1) # Would need to increase the upper limit so that the line is visible
 ax.set_xlim(0, max(cycle_list))
@@ -204,8 +204,8 @@ plt.savefig(os.path.join(output_folder, 'cue.png'))
 
 # Plot 3: CUE and GGE for the whole experiment
 fig, ax = plt.subplots()
-plt.plot(cycle_list, cue_list, label = "CUE")
-plt.plot(cycle_list, gge_list, '--', label = "GGE") # Dashed line so you can see that the two are directly on top of one another
+plt.plot(cycle_list, cue_list, label="CUE")
+plt.plot(cycle_list, gge_list, '--', label="GGE")  # Dashed line so you can see that the two are directly on top of one another
 ax.set_ylabel("Value")
 ax.set_xlim(0, max(cycle_list))
 ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
