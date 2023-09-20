@@ -21,16 +21,19 @@ from utils import (get_c_ex_rxns,
                    get_org_c_secretion,
                    get_c_uptake)
 
+# Set the output directory (where the results.pkl file will be saved)
+OUT_DIR = os.path.dirname(os.path.realpath(__file__))
+
 # Set a folder for the plots
 # Assuming you are running from the root of the repository
-output_folder = 'mit1002_full/timecourse/plots'
+output_folder = os.path.join(OUT_DIR, 'plots')
 
 # Check if the folder exists, if not, create it
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
 # Load the results
-with open('mit1002_full/timecourse/results.pkl', 'rb') as f:
+with open(os.path.join(OUT_DIR, 'results.pkl'), 'rb') as f:
     experiment = pickle.load(f)
 
 # Path to Zac's results
