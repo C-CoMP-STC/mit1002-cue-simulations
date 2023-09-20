@@ -9,6 +9,7 @@ OUT_DIR = os.path.dirname(os.path.realpath(__file__))
 alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-model/model.xml")
 
 # Make a medium with just glucose
+# TODO: Use an uptake rate based on the NMR data
 glc_medium = {'EX_cpd00027_e0': 10,  # D-Glucose_e0
               # Not sure what value to use for oxygen
               'EX_cpd00007_e0': 1000,  # O2_e0
@@ -32,6 +33,7 @@ glc_medium = {'EX_cpd00027_e0': 10,  # D-Glucose_e0
               }
 
 # Make a medium with just acetate
+# TODO: Use an uptake rate based on the NMR data
 ace_medium = {'EX_cpd00029_e0': 10,  # Acetate_e0
               'EX_cpd00007_e0': 1000,  # O2_e0
               # Remaining minimal media components
@@ -54,6 +56,7 @@ ace_medium = {'EX_cpd00029_e0': 10,  # Acetate_e0
               }
 
 # Make a medium with both glucose and acetate
+# FIXME: Need the equivlant amount of carbon available in the medium
 mix_medium = {'EX_cpd00027_e0': 10,  # D-Glucose_e0
               'EX_cpd00029_e0': 10,  # Acetate_e0
               'EX_cpd00007_e0': 1000,  # O2_e0
