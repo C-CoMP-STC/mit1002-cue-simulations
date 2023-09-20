@@ -14,28 +14,28 @@ test_tube = c.layout()
 # I chose 0.012 because that is equivalent to what Zac used in the lab
 # He used 12 mmol/L carbon, and I am modeling 1 mL of media, so 12 mmol/L
 # * (0.1L/100 mL) = 0.012 mmol/mL
-test_tube.set_specific_metabolite('cpd00027_e0', 0.012) # D-Glucose_e0, in mmol
+test_tube.set_specific_metabolite('cpd00027_e0', 0.012)  # D-Glucose_e0, in mmol
 
 # Add a limiting amount of oxygen- not sure the exact amount I should use
-test_tube.set_specific_metabolite('cpd00007_e0', 2) # O2_e0
+test_tube.set_specific_metabolite('cpd00007_e0', 2)  # O2_e0
 
 # Add the of the nutrients I found in the find_minimal_media notebook
-test_tube.set_specific_metabolite('cpd00058_e0', 1000); # Cu2+_e0
-test_tube.set_specific_metabolite('cpd00971_e0', 1000); # Na+_e0
-test_tube.set_specific_metabolite('cpd00063_e0', 1000); # Ca2+_e0
-test_tube.set_specific_metabolite('cpd00048_e0', 1000); # Sulfate_e0
-test_tube.set_specific_metabolite('cpd10516_e0', 1000); # fe3_e0
-test_tube.set_specific_metabolite('cpd00254_e0', 1000); # Mg_e0
-test_tube.set_specific_metabolite('cpd00009_e0', 1000); # Phosphate_e0
-test_tube.set_specific_metabolite('cpd00205_e0', 1000); # K+_e0
-test_tube.set_specific_metabolite('cpd00013_e0', 1000); # NH3_e0
-test_tube.set_specific_metabolite('cpd00099_e0', 1000); # Cl-_e0
-test_tube.set_specific_metabolite('cpd00030_e0', 1000); # Mn2+_e0
-test_tube.set_specific_metabolite('cpd00075_e0', 1000); # Nitrite_e0
-test_tube.set_specific_metabolite('cpd00001_e0', 1000); # H2O_e0
-test_tube.set_specific_metabolite('cpd00635_e0', 1000); # Cbl_e0
-test_tube.set_specific_metabolite('cpd00034_e0', 1000); # Zn2+_e0
-test_tube.set_specific_metabolite('cpd00149_e0', 1000); # Co2+_e0
+test_tube.set_specific_metabolite('cpd00058_e0', 1000)  # Cu2+_e0
+test_tube.set_specific_metabolite('cpd00971_e0', 1000)  # Na+_e0
+test_tube.set_specific_metabolite('cpd00063_e0', 1000)  # Ca2+_e0
+test_tube.set_specific_metabolite('cpd00048_e0', 1000)  # Sulfate_e0
+test_tube.set_specific_metabolite('cpd10516_e0', 1000)  # fe3_e0
+test_tube.set_specific_metabolite('cpd00254_e0', 1000)  # Mg_e0
+test_tube.set_specific_metabolite('cpd00009_e0', 1000)  # Phosphate_e0
+test_tube.set_specific_metabolite('cpd00205_e0', 1000)  # K+_e0
+test_tube.set_specific_metabolite('cpd00013_e0', 1000)  # NH3_e0
+test_tube.set_specific_metabolite('cpd00099_e0', 1000)  # Cl-_e0
+test_tube.set_specific_metabolite('cpd00030_e0', 1000)  # Mn2+_e0
+test_tube.set_specific_metabolite('cpd00075_e0', 1000)  # Nitrite_e0
+test_tube.set_specific_metabolite('cpd00001_e0', 1000)  # H2O_e0
+test_tube.set_specific_metabolite('cpd00635_e0', 1000)  # Cbl_e0
+test_tube.set_specific_metabolite('cpd00034_e0', 1000)  # Zn2+_e0
+test_tube.set_specific_metabolite('cpd00149_e0', 1000)  # Co2+_e0
 
 # Load in the ALT model using COBRApy
 alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-model/model.xml")
@@ -64,8 +64,8 @@ sim_params.set_param('defaultVmax', 18.5)
 # Set a different Vmax for just the oxygen exchange reaction
 alt.change_vmax('EX_cpd00007_e0', 10)
 sim_params.set_param('defaultKm', 0.000015)
-sim_params.set_param('maxCycles', 2500) # To get a total of 25 hours
-sim_params.set_param('timeStep', 0.01) # In hours
+sim_params.set_param('maxCycles', 2500)  # To get a total of 25 hours
+sim_params.set_param('timeStep', 0.01)  # In hours
 sim_params.set_param('spaceWidth', 1)
 sim_params.set_param('maxSpaceBiomass', 10)
 sim_params.set_param('minSpaceBiomass', 1e-11)
@@ -82,4 +82,3 @@ experiment.run()
 # Save the results
 with open('mit1002_full/timecourse/results.pkl', 'wb') as f:
     pickle.dump(experiment, f)
-
