@@ -1,11 +1,8 @@
 import cobra
 import matplotlib.pyplot as plt
-import numpy as np
 import os
 import pickle
 import pandas as pd
-
-from gem2cue import utils as gem2cue
 
 import helpers
 
