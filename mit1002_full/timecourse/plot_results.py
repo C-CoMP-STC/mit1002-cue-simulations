@@ -270,6 +270,43 @@ plt.savefig(os.path.join(output_folder, 'exp_vs_pred_cue.png'))
 ########################################################################
 # Cumulative CUE
 ########################################################################
+# Get the initial concentration of glucose
+glc_conc = media[media.metabolite == 'cpd00027_e0'].iloc[0].conc_mmol
+# Get the initial concentration of CO2
+co2_conc = media[media.metabolite == 'cpd00011_e0'].iloc[0].conc_mmol
+
+# Calculate the cumulative CUE for each cycle
+cumulative_cue = []
+for i in range(len(cue_list)):
+    # Get the cumulative CO2
+    # Filter the media dataframe to only include the current cycle and the
+    # metabolite glucose, but if that cycle isn't in the media dataframe,
+    # skip it
+    if len(media[media.cycle == cycle_list[i]][media.metabolite == 'cpd00027_e0']) == 0:
+        cumulative_cue.append(None)
+        continue
+    else:
+        cumulative_glc = glc_conc - media[media.cycle == cycle_list[i]][media.metabolite == 'cpd00027_e0'].iloc[0].conc_mmol
+    # Do the same for CO2
+    if len(media[media.cycle == cycle_list[i]][media.metabolite == 'cpd00011_e0']) == 0:
+        cumulative_cue.append(None)
+        continue
+    else:
+        cumulative_co2 = media[media.cycle == cycle_list[i]][media.metabolite == 'cpd00011_e0'].iloc[0].conc_mmol - co2_conc
+
+    # Calculate the cumulative CUE
+    cumulative_cue.append(1 - cumulative_co2 / cumulative_glc)
+
+# Plot the cumulative CUE
+fig, ax = plt.subplots()
+plt.plot(cycle_list, cumulative_cue, label="Cumulative CUE")
+ax.set_ylabel("Value")
+ax.set_xlim(0, max(cycle_list))
+ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
+ax.set_xlabel("Time (hours)")
+plt.legend()
+
+plt.savefig(os.path.join(output_folder, 'cumulative_cue.png'))
 
 
 ########################################################################
