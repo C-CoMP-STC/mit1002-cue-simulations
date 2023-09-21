@@ -226,7 +226,7 @@ drawdown.columns = ['Time (hours)', 'Ac_D', 'Ac_E', 'Ac_F', 'Glc_A', 'Glc_B', 'G
 drawdow_datapoints = [0, 3, 6, 9, 12]
 co2_datapoints = [0, 3.29385, 6.11715, 8.94045, 12.2343]
 
-# Calculate the mean and standard deviation of the CUE foe each timepoint
+# Calculate the mean and standard deviation of the CUE for each timepoint
 cue_means = []
 cue_std = []
 

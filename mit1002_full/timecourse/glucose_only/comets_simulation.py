@@ -1,20 +1,26 @@
-import cometspy as c
-import cobra
-import pickle
-
 # This script is for setting up, running, and saving the results from a
 # COMETS simulation
 # The simulation is for the Alteromonas macleodii MIT1002 core model,
 # in a well-mixed environment with glucose and oxygen
 
+import cometspy as c
+import cobra
+import pickle
+import os
+
+# Set the output directory (where the results.pkl file will be saved)
+OUT_DIR = os.path.dirname(os.path.realpath(__file__))
+
 # Create empty 1x1 layout
 test_tube = c.layout()
 
-# Set glucose os 0.012, everything else as 1000
-# I chose 0.012 because that is equivalent to what Zac used in the lab
+# Set glucose os 0.002, everything else as 1000
+# TODO: Check this is correct
+# I chose 0.002 because that is equivalent to what Zac used in the lab
 # He used 12 mmol/L carbon, and I am modeling 1 mL of media, so 12 mmol/L
-# * (0.1L/100 mL) = 0.012 mmol/mL
-test_tube.set_specific_metabolite('cpd00027_e0', 0.012)  # D-Glucose_e0, in mmol
+# * (0.1L/100 mL) = 0.012 mmol/mL carbon. And glucose has 6 carbons, so
+# 0.012 mmol/mL / 6 carbons = 0.002 mmol/mL glucose
+test_tube.set_specific_metabolite('cpd00027_e0', 0.002)  # D-Glucose_e0, in mmol
 
 # Add a limiting amount of oxygen- not sure the exact amount I should use
 test_tube.set_specific_metabolite('cpd00007_e0', 2)  # O2_e0
@@ -81,5 +87,5 @@ experiment = c.comets(test_tube, sim_params)
 experiment.run()
 
 # Save the results
-with open('mit1002_full/timecourse/results.pkl', 'wb') as f:
+with open(os.path.join(OUT_DIR, 'results.pkl'), 'wb') as f:
     pickle.dump(experiment, f)
