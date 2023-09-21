@@ -7,6 +7,8 @@ import pandas as pd
 
 from gem2cue import utils as gem2cue
 
+import helpers
+
 # Set the output directory (where the results.pkl file will be saved)
 OUT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -26,21 +28,29 @@ with open(os.path.join(OUT_DIR, 'results.pkl'), 'rb') as f:
 # Assuming you are running from the root of the repository
 results_path = '../Zac txt data/'
 
-########################################################################
-# Biomass
-########################################################################
-# Plot the biomass over time
-# Right now, can use total biomass because the simulation is only the E.
-# coli core model, but if I add other species, I will need to change
-ax = experiment.total_biomass.plot(x='cycle')
-ax.set_ylabel("Biomass (gr.)")
+# Read in the model file
+# Assuming you are running from the root of the repository
+model_path = '../../GEM-repos/mit1002-model/model.xml'
+alt_cobra = cobra.io.read_sbml_model(model_path)
 
-# Convert the x ticks to hours by dividing by 100
-ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
-ax.set_xlabel("Time (hours)")
+# Get the ID of the biomass reaction
+# TODO: Just get this from the model objective
+biomass_rxn = 'bio1_biomass'
 
-# Save the biomass plot
-plt.savefig(os.path.join(output_folder, 'biomass.png'))
+# Plot the biomass
+helpers.plot_biomass(experiment, output_folder)
+
+# Plot the fluxes
+helpers.plot_fluxes(experiment, output_folder)
+
+# Plot concentrations of metabolites in the media
+helpers.plot_media(alt_cobra, experiment, output_folder)
+
+# Plot all of the due definitions on one graph
+helpers.plot_cue(alt_cobra, experiment, biomass_rxn, output_folder)
+
+# Plot the carbon fates
+helpers.plot_c_fates(alt_cobra, experiment, biomass_rxn, output_folder)
 
 ########################################################################
 # Experimental and Predicted Biomass
@@ -93,258 +103,60 @@ ax.right_ax.set_ylabel('Biomass (gr.)')
 plt.tight_layout()
 plt.savefig(os.path.join(output_folder, 'exp_vs_pred_biomass.png'))
 
-########################################################################
-# Fluxes
-########################################################################
-# Plot the fluxes over time
-# The model doesn't have a name, it is just called ''
-ax = experiment.fluxes_by_species[''].plot(x="cycle",  # FIXME: Add an ID to the model file
-                                           y=["EX_cpd00007_e0",  # EX_o2_e
-                                              "EX_cpd00011_e0",  # EX_co2_e
-                                              "EX_cpd00027_e0",  # Glucose
-                                              "EX_cpd00029_e0"],  # Acetate
-                                           kind="line")
 
-# Convert the x ticks to hours by dividing by 100
-ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
-ax.set_xlabel("Time (hours)")
+# ########################################################################
+# # Experimental and Predicted CUE
+# ########################################################################
+# # Load the cumulative CO2 data
+# cumulative_co2 = pd.read_csv(os.path.join(results_path, 'MIT1002_singles_cumulative.txt'),
+#                              sep='\t')
 
-# Make a more human-friendly legend
-plt.legend(('O2 Exchange', 'CO2 Exchange', 'Glucose Exchange', 'Acetate Exchange'))
+# # Load the cumulative CO2 data
+# drawdown = pd.read_csv(os.path.join(results_path, 'MIT1002_singles_drawdown.txt'),
+#                        sep='\t')
+# drawdown.columns = ['Time (hours)', 'Ac_D', 'Ac_E', 'Ac_F', 'Glc_A', 'Glc_B', 'Glc_C']
 
-# Save the biomass plot
-plt.savefig(os.path.join(output_folder, 'fluxes.png'))
+# # Set the timepoints I am using
+# drawdow_datapoints = [0, 3, 6, 9, 12]
+# co2_datapoints = [0, 3.29385, 6.11715, 8.94045, 12.2343]
 
-########################################################################
-# Media
-########################################################################
-# Load the model (needed to get human friendly names)
-alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-model/model.xml")
+# # Calculate the mean and standard deviation of the CUE for each timepoint
+# cue_means = []
+# cue_std = []
 
-# Plot the media concentrations over time
-media = experiment.media.copy()
-media = media[media.conc_mmol < 900]
+# for i in range(1,5):
+#     cues = []
+#     for replicate in ['Glc_A', 'Glc_B', 'Glc_C']:
+#         # Get the data for the current drawdown
+#         current_drawdown = float(drawdown[drawdown['Time (hours)'] == drawdow_datapoints[i-1]][replicate]) - float(drawdown[drawdown['Time (hours)'] == drawdow_datapoints[i]][replicate])
+#         # Get the data for the current CO2
+#         current_co2 = float(cumulative_co2[cumulative_co2['Time (hours)'] == co2_datapoints[i]][replicate]) - float(cumulative_co2[cumulative_co2['Time (hours)'] == co2_datapoints[i-1]][replicate])
 
-fig, ax = plt.subplots()
-for name, group in media.groupby('metabolite'):
-    group.plot(x='cycle',
-               ax=ax,
-               y='conc_mmol',
-               label=alt_cobra.metabolites.get_by_id(name).name)
-ax.set_ylabel("Concentration (mmol)")
+#         # Calculate the CUE for the current replicate
+#         if current_drawdown == 0:
+#             continue
+#         cues.append(1 - current_co2 / (current_drawdown))
 
-# Convert the x ticks to hours by dividing by 100
-ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
-ax.set_xlabel("Time (hours)")
+#     # Calcualte the mean and the standard deviation for all the replicate
+#     cue_means.append(np.mean(cues))
+#     cue_std.append(np.std(cues))
 
-# Save the media plot with the default y lims
-plt.savefig(os.path.join(output_folder, 'media.png'))
+# # Make a scatter plot of the CUE means with error bars at the center of the
+# # measurement windows
+# window_centers = [1.5, 4.5, 7.5, 10.5]
+# fig, ax = plt.subplots()
+# plt.errorbar(window_centers, cue_means, yerr=cue_std, linestyle='')
 
-# Zoom in so I can see what the low metabolites are doing
-# FIXME: It still shows the legend of O2 which is confusing, maybe make
-# a new media df with a lower concentration threshold than 900
-ax.set_ylim(0, 0.022)  # Can only get this number by actually looking at it
-plt.savefig(os.path.join(output_folder, 'media-zoom-in.png'))
+# # Add straight lines to the plot
+# window_ends = [[0, 3], [3, 6], [6, 9], [9, 12]]
+# for i in range(4):
+#     plt.plot(window_ends[i], [cue_means[i], cue_means[i]], linestyle='-', color='C0')
 
-########################################################################
-# CUE
-########################################################################
-# Need the model loaded to get the exchange reactions, already done
-# for the media plot
+# # Plot the FBA predicted CUE
+# plt.plot(np.array(cycle_list)/100 + 4, cue_list, label = "FBA Predicted CUE")
 
-# Need the biomass reaction ID to calculate the BGE
-biomass_rxn = 'bio1_biomass'
-
-# Get the exchange reactions for the E coli core model
-# I think I would rather do this in the comets_simulation script, and
-# save the exchange reactions with the results, but for now just do it
-# here
-c_ex_rxns = gem2cue.get_c_ex_rxns(alt_cobra)
-
-# Get the fluxes for each exchange reaction for each cycle of the
-# experiment
-fluxes = experiment.fluxes_by_species[''].copy()
-# Create an empty array to hold the CUE for each cycle
-cue_list = []
-gge_list = []
-bge_list = []
-# Loop through each cycle and calculate the CUE and the GGE
-for index, row in fluxes.iterrows():
-    u_fluxes, ex_fluxes, biomass_flux = gem2cue.get_c_ex_rxn_fluxes(alt_cobra,
-                                                                    row,
-                                                                    c_ex_rxns,
-                                                                    biomass_rxn,
-                                                                    'COMETS')
-    cue_list.append(gem2cue.calculate_cue(u_fluxes, ex_fluxes,
-                                          co2_ex_rxn="EX_cpd00011_e0"))
-    gge_list.append(gem2cue.calculate_gge(u_fluxes, ex_fluxes,
-                                          co2_ex_rxn="EX_cpd00011_e0"))
-    bge_list.append(gem2cue.calculate_bge(ex_fluxes, biomass_flux,
-                                          co2_ex_rxn="EX_cpd00011_e0"))
-
-# Plot the CUE for each cycle
-cycle_list = experiment.fluxes_by_species['']['cycle'].tolist()
-
-# Plot 1: CUE only
-fig, ax = plt.subplots()
-plt.plot(cycle_list, cue_list, label="CUE")
-ax.set_ylabel("Value")
-# ax.set_ylim(0, 1) # Would need to increase the upper limit so that the line is visible
-ax.set_xlim(0, max(cycle_list))
-ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
-ax.set_xlabel("Time (hours)")
-plt.legend()
-
-plt.savefig(os.path.join(output_folder, 'cue.png'))
-
-# Plot 2: CUE, GGE, and BGE for the whole experiment
-fig, ax = plt.subplots()
-plt.plot(cycle_list, cue_list, label="CUE")
-plt.plot(cycle_list, gge_list, '--', label="GGE")
-plt.plot(cycle_list, bge_list, ':', label="BGE")
-ax.set_ylabel("Value")
-ax.set_xlim(0, max(cycle_list))
-ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
-ax.set_xlabel("Time (hours)")
-plt.legend()
-
-plt.savefig(os.path.join(output_folder, 'cue_gge.png'))
-
-########################################################################
-# Experimental and Predicted CUE
-########################################################################
-# Load the cumulative CO2 data
-cumulative_co2 = pd.read_csv(os.path.join(results_path, 'MIT1002_singles_cumulative.txt'),
-                             sep='\t')
-
-# Load the cumulative CO2 data
-drawdown = pd.read_csv(os.path.join(results_path, 'MIT1002_singles_drawdown.txt'),
-                       sep='\t')
-drawdown.columns = ['Time (hours)', 'Ac_D', 'Ac_E', 'Ac_F', 'Glc_A', 'Glc_B', 'Glc_C']
-
-# Set the timepoints I am using
-drawdow_datapoints = [0, 3, 6, 9, 12]
-co2_datapoints = [0, 3.29385, 6.11715, 8.94045, 12.2343]
-
-# Calculate the mean and standard deviation of the CUE for each timepoint
-cue_means = []
-cue_std = []
-
-for i in range(1,5):
-    cues = []
-    for replicate in ['Glc_A', 'Glc_B', 'Glc_C']:
-        # Get the data for the current drawdown
-        current_drawdown = float(drawdown[drawdown['Time (hours)'] == drawdow_datapoints[i-1]][replicate]) - float(drawdown[drawdown['Time (hours)'] == drawdow_datapoints[i]][replicate])
-        # Get the data for the current CO2
-        current_co2 = float(cumulative_co2[cumulative_co2['Time (hours)'] == co2_datapoints[i]][replicate]) - float(cumulative_co2[cumulative_co2['Time (hours)'] == co2_datapoints[i-1]][replicate])
-
-        # Calculate the CUE for the current replicate
-        if current_drawdown == 0:
-            continue
-        cues.append(1 - current_co2 / (current_drawdown))
-
-    # Calcualte the mean and the standard deviation for all the replicate
-    cue_means.append(np.mean(cues))
-    cue_std.append(np.std(cues))
-
-# Make a scatter plot of the CUE means with error bars at the center of the
-# measurement windows
-window_centers = [1.5, 4.5, 7.5, 10.5]
-fig, ax = plt.subplots()
-plt.errorbar(window_centers, cue_means, yerr=cue_std, linestyle='')
-
-# Add straight lines to the plot
-window_ends = [[0, 3], [3, 6], [6, 9], [9, 12]]
-for i in range(4):
-    plt.plot(window_ends[i], [cue_means[i], cue_means[i]], linestyle='-', color='C0')
-
-# Plot the FBA predicted CUE
-plt.plot(np.array(cycle_list)/100 + 4, cue_list, label = "FBA Predicted CUE")
-
-# Label the axes
-ax.set_xlabel("Time (hours)")
-ax.set_ylabel("CUE")
-# Save the figure
-plt.savefig(os.path.join(output_folder, 'exp_vs_pred_cue.png'))
-
-########################################################################
-# Cumulative CUE
-########################################################################
-# Get the initial concentration of glucose
-glc_conc = media[media.metabolite == 'cpd00027_e0'].iloc[0].conc_mmol
-# Get the initial concentration of CO2
-co2_conc = media[media.metabolite == 'cpd00011_e0'].iloc[0].conc_mmol
-
-# Calculate the cumulative CUE for each cycle
-cumulative_cue = []
-for i in range(len(cue_list)):
-    # Get the cumulative CO2
-    # Filter the media dataframe to only include the current cycle and the
-    # metabolite glucose, but if that cycle isn't in the media dataframe,
-    # skip it
-    if len(media[media.cycle == cycle_list[i]][media.metabolite == 'cpd00027_e0']) == 0:
-        cumulative_cue.append(None)
-        continue
-    else:
-        cumulative_glc = glc_conc - media[media.cycle == cycle_list[i]][media.metabolite == 'cpd00027_e0'].iloc[0].conc_mmol
-    # Do the same for CO2
-    if len(media[media.cycle == cycle_list[i]][media.metabolite == 'cpd00011_e0']) == 0:
-        cumulative_cue.append(None)
-        continue
-    else:
-        cumulative_co2 = media[media.cycle == cycle_list[i]][media.metabolite == 'cpd00011_e0'].iloc[0].conc_mmol - co2_conc
-
-    # Calculate the cumulative CUE
-    cumulative_cue.append(1 - cumulative_co2 / cumulative_glc)
-
-# Plot the cumulative CUE
-fig, ax = plt.subplots()
-plt.plot(cycle_list, cumulative_cue, label="Cumulative CUE")
-ax.set_ylabel("Value")
-ax.set_xlim(0, max(cycle_list))
-ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
-ax.set_xlabel("Time (hours)")
-plt.legend()
-
-plt.savefig(os.path.join(output_folder, 'cumulative_cue.png'))
-
-
-########################################################################
-# Carbon Fates
-# Different from CUE- because it isn't just one value
-########################################################################
-# Get the carbon fates for each cycle
-unaccounted = []
-respiration = []
-exudation = []
-biomass = []
-for index, row in fluxes.iterrows():
-    cycle_biomass = get_biomass_carbon(row, 'bio1_biomass', alt_cobra, 'COMETS')
-    uptake_fluxes, secretion_fluxes = get_c_ex_rxn_fluxes(row, c_ex_rxns,
-                                                          'COMETS')
-    cycle_uptake = get_c_uptake(uptake_fluxes)
-    cycle_co2 = get_co2_secretion(secretion_fluxes, 'EX_cpd00011_e0')
-    cycle_secretion = get_org_c_secretion(secretion_fluxes, 'EX_cpd00011_e0')
-
-    unaccounted.append(cycle_uptake - (cycle_co2 + cycle_secretion + cycle_biomass))
-    respiration.append(cycle_co2)
-    exudation.append(cycle_secretion)
-    biomass.append(cycle_biomass)
-
-# Plot 5: Plot bar chart of carbon fates for each cycle
-# width = 0.35
-fig, ax = plt.subplots()
-ax.bar(cycle_list, biomass, label='Biomass')
-ax.bar(cycle_list, exudation, bottom=biomass, label='Organic C')
-ax.bar(cycle_list, respiration, bottom=np.array(biomass)+np.array(exudation),
-       label='CO2')
-ax.bar(cycle_list, unaccounted,
-       bottom=np.array(biomass)+np.array(exudation)+np.array(respiration),
-       label='Unaccounted')
-plt.ylabel('Carbon Atom Flux')
-ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
-ax.set_xlabel("Time (hours)")
-plt.title('Carbon Fates at Each Cycle')
-plt.legend()
-
-plt.savefig(os.path.join(output_folder, 'c_fates_per_cycle.png'))
+# # Label the axes
+# ax.set_xlabel("Time (hours)")
+# ax.set_ylabel("CUE")
+# # Save the figure
+# plt.savefig(os.path.join(output_folder, 'exp_vs_pred_cue.png'))
