@@ -176,8 +176,9 @@ def plot_cue(model, experiment, biomass_rxn, max_cycle, output_folder,
 
     # Calculate the cumulative CUE
     media = experiment.media.copy()
-    # Get the initial concentration of glucose
-    glc_conc = media[media.metabolite == 'cpd00027_e0'].iloc[0].conc_mmol
+    # Get the initial concentration of all organic carbon sources
+    initial_carbon = get_c_conc_from_media(model, media, cycle=0)
+
     # Get the initial concentration of CO2
     co2_conc = media[media.metabolite == 'cpd00011_e0'].iloc[0].conc_mmol
 
@@ -185,24 +186,25 @@ def plot_cue(model, experiment, biomass_rxn, max_cycle, output_folder,
     cycle_list = experiment.fluxes_by_species['']['cycle'].tolist()
     cumulative_cue = []
     for i in range(len(cue_list)):
-        # Get the cumulative CO2
-        # Filter the media dataframe to only include the current cycle and the
-        # metabolite glucose, but if that cycle isn't in the media dataframe,
-        # skip it
-        if len(media[media.cycle == cycle_list[i]][media.metabolite == 'cpd00027_e0']) == 0:
-            cumulative_cue.append(None)
-            continue
-        else:
-            cumulative_glc = glc_conc - media[media.cycle == cycle_list[i]][media.metabolite == 'cpd00027_e0'].iloc[0].conc_mmol
-        # Do the same for CO2
+        # Get the current amount of organic carbon in the media
+        current_carbon = get_c_conc_from_media(model,
+                                               media,
+                                               cycle=cycle_list[i])
+        # To get the current amount of CO2 filter the media dataframe to only
+        # include the current cycle and co2, but if that cycle isn't in the
+        # media dataframe, skip it
         if len(media[media.cycle == cycle_list[i]][media.metabolite == 'cpd00011_e0']) == 0:
             cumulative_cue.append(None)
             continue
         else:
-            cumulative_co2 = media[media.cycle == cycle_list[i]][media.metabolite == 'cpd00011_e0'].iloc[0].conc_mmol - co2_conc
+            current_co2 = media[media.cycle == cycle_list[i]][media.metabolite == 'cpd00011_e0'].iloc[0].conc_mmol
+
+        # Get the changes since the initial cycle
+        delta_carbon = current_carbon - initial_carbon
+        delta_co2 = current_co2 - co2_conc
 
         # Calculate the cumulative CUE
-        cumulative_cue.append(1 - cumulative_co2 / cumulative_glc)
+        cumulative_cue.append(1 - delta_co2 / delta_carbon)
 
     # Plot the specified values for each cycle
     fig, ax = plt.subplots()
@@ -277,3 +279,49 @@ def plot_c_fates(model, experiment, biomass_rxn, output_folder):
     plt.legend()
 
     plt.savefig(os.path.join(output_folder, 'c_fates_per_cycle.png'))
+
+
+def get_c_conc_from_media(model, media, cycle, co2_id='cpd00011_e0'):
+    """
+    Get the concentration of carbon in the media for the given cycle.
+
+    Parameters
+    ----------
+    model : cobra.Model
+        The model to get the metabolite names from.
+    media : pandas.DataFrame
+        The media dataframe from the experiment.
+    cycle : int
+        The cycle to get the media concentration for.
+    co2_id : str
+        The ID of the CO2 metabolite in the model.
+
+    Returns
+    -------
+    float
+        The concentration of carbon in the media.
+    """
+    initial_carbon_sources = {}
+    initial_media = media[media.cycle == cycle]
+    for id in initial_media.metabolite.unique():
+        # Skip CO2
+        if id == co2_id:
+            continue
+        # Get the metabolite from the model
+        metabolite = model.metabolites.get_by_id(id)
+        # Check that the metabolite is a carbon source, if not skip it
+        if 'C' in metabolite.elements.keys():
+            n_carbon = metabolite.elements['C']
+        else:
+            continue
+        # Get the initial concentration of the metabolite
+        initial_conc = initial_media[initial_media.metabolite == id].iloc[0].conc_mmol
+        # Multiply the concentration by the number of carbons to get the
+        # initial concentration of carbon
+        initial_carbon = initial_conc * n_carbon
+        # Add the initial carbon to the dictionary
+        initial_carbon_sources[id] = initial_carbon
+    # Get the initial concentration of all carbon by summing the values in the
+    # dictionary
+    initial_carbon = sum(initial_carbon_sources.values())
+    return initial_carbon
