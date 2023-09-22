@@ -201,7 +201,7 @@ def plot_cue(model, experiment, biomass_rxn, max_cycle, output_folder,
 
         # Get the changes since the initial cycle
         delta_carbon = current_carbon - initial_carbon
-        delta_co2 = current_co2 - co2_conc
+        delta_co2 = co2_conc - current_co2
 
         # Calculate the cumulative CUE
         cumulative_cue.append(1 - delta_co2 / delta_carbon)
