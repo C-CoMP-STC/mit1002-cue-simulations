@@ -14,7 +14,7 @@ OUT_DIR = os.path.dirname(os.path.realpath(__file__))
 # Create empty 1x1 layout
 test_tube = c.layout()
 
-# Set acetate to 0.002, everything else as 1000
+# Set acetate to 0.006, everything else as 1000
 # TODO: Check this is correct
 # I chose 0.002 because that is equivalent to what Zac used in the lab
 # He used 12 mmol/L carbon, and I am modeling 1 mL of media, so 12 mmol/L
