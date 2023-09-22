@@ -4,6 +4,14 @@ import os
 import pickle
 import pandas as pd
 
+# Add the root folder to the python path so that I can import helpers.py
+# TODO: Find a a way to do this that doens't use sys
+import sys
+sys.path.append(
+    os.path.dirname(
+        os.path.dirname(
+            os.path.dirname(
+                os.path.dirname(os.path.realpath(__file__))))))
 import helpers
 
 # Set the output directory (where the results.pkl file will be saved)
@@ -21,6 +29,11 @@ if not os.path.exists(output_folder):
 with open(os.path.join(OUT_DIR, 'results.pkl'), 'rb') as f:
     experiment = pickle.load(f)
 
+# Find the cycle where biomass stops increasing
+stationary_cycle = experiment.total_biomass.loc[
+    experiment.total_biomass[''].idxmax()]['cycle']
+max_cycle = stationary_cycle + 25
+
 # Path to Zac's results
 # Assuming you are running from the root of the repository
 results_path = '../Zac txt data/'
@@ -35,19 +48,20 @@ alt_cobra = cobra.io.read_sbml_model(model_path)
 biomass_rxn = 'bio1_biomass'
 
 # Plot the biomass
-helpers.plot_biomass(experiment, output_folder)
+helpers.plot_biomass(experiment, max_cycle, output_folder)
 
 # Plot the fluxes
-helpers.plot_fluxes(experiment, output_folder)
+helpers.plot_fluxes(experiment, max_cycle, output_folder)
 
 # Plot concentrations of metabolites in the media
-helpers.plot_media(alt_cobra, experiment, output_folder)
+helpers.plot_media(alt_cobra, experiment, max_cycle, output_folder)
 
 # Plot all of the due definitions on one graph
-helpers.plot_cue(alt_cobra, experiment, biomass_rxn, output_folder)
+helpers.plot_cue(alt_cobra, experiment, biomass_rxn, max_cycle, output_folder)
 
 # Plot the carbon fates
-helpers.plot_c_fates(alt_cobra, experiment, biomass_rxn, output_folder)
+# There's an error somewhere in this function
+# helpers.plot_c_fates(alt_cobra, experiment, biomass_rxn, max_cycle, output_folder)
 
 ########################################################################
 # Experimental and Predicted Biomass

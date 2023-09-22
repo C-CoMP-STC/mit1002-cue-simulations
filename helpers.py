@@ -6,7 +6,7 @@ import pandas as pd
 from gem2cue import utils as gem2cue
 
 
-def plot_biomass(experiment, output_folder):
+def plot_biomass(experiment, max_cycle, output_folder):
     """
     Plot the biomass over time for the given experiment.
 
@@ -14,6 +14,8 @@ def plot_biomass(experiment, output_folder):
     ----------
     experiment : c.comets
         The experiment to plot the biomass for.
+    max_cycle : int
+        The cycle where the biomass stops increasing.
     output_folder : str
         The path to the folder to save the plot to.
     """
@@ -22,6 +24,9 @@ def plot_biomass(experiment, output_folder):
     # coli core model, but if I add other species, I will need to change
     ax = experiment.total_biomass.plot(x='cycle')
     ax.set_ylabel("Biomass (gr.)")
+
+    # Cut off the x axis at the max cycle
+    ax.set_xlim(0, max_cycle)
 
     # Convert the x ticks to hours by dividing by 100
     # TODO: Make this a variable
@@ -32,7 +37,7 @@ def plot_biomass(experiment, output_folder):
     plt.savefig(os.path.join(output_folder, 'biomass.png'))
 
 
-def plot_fluxes(experiment, output_folder):
+def plot_fluxes(experiment, max_cycle, output_folder):
     """
     Plot the fluxes of certain reactions over time for the given experiment.
     Currently the reactions are hard coded to be the exchange reactions for
@@ -42,6 +47,8 @@ def plot_fluxes(experiment, output_folder):
     ----------
     experiment : c.comets
         The experiment to plot the biomass for.
+    max_cycle : int
+        The cycle where the biomass stops increasing.
     output_folder : str
         The path to the folder to save the plot to.
     """
@@ -53,6 +60,8 @@ def plot_fluxes(experiment, output_folder):
                                                 "EX_cpd00027_e0",  # Glucose
                                                 "EX_cpd00029_e0"],  # Acetate
                                             kind="line")
+    # Cut off the x axis at the max cycle
+    ax.set_xlim(0, max_cycle)
 
     # Convert the x ticks to hours by dividing by 100
     ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
@@ -65,7 +74,7 @@ def plot_fluxes(experiment, output_folder):
     plt.savefig(os.path.join(output_folder, 'fluxes.png'))
 
 
-def plot_media(model, experiment, output_folder):
+def plot_media(model, experiment, max_cycle, output_folder):
     """
     Plot the media concentrations over time for the given experiment.
 
@@ -75,6 +84,8 @@ def plot_media(model, experiment, output_folder):
         The model to get the metabolite names from.
     experiment : c.comets
         The experiment to plot the media for.
+    max_cycle : int
+        The cycle where the biomass stops increasing.
     output_folder : str
         The path to the folder to save the plot to.
     """
@@ -90,6 +101,9 @@ def plot_media(model, experiment, output_folder):
                    label=model.metabolites.get_by_id(name).name)
     ax.set_ylabel("Concentration (mmol)")
 
+    # Cut off the x axis at the max cycle
+    ax.set_xlim(0, max_cycle)
+
     # Convert the x ticks to hours by dividing by 100
     ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
     ax.set_xlabel("Time (hours)")
@@ -104,7 +118,7 @@ def plot_media(model, experiment, output_folder):
     plt.savefig(os.path.join(output_folder, 'media-zoom-in.png'))
 
 
-def plot_cue(model, experiment, biomass_rxn, output_folder,
+def plot_cue(model, experiment, biomass_rxn, max_cycle, output_folder,
              definitions=['cue', 'gge', 'bge', 'cumulative_cue']):
     """
     Plot the values for any of the CUE metrics over time for the given
@@ -118,6 +132,8 @@ def plot_cue(model, experiment, biomass_rxn, output_folder,
         The experiment to plot the media for.
     biomass_rxn : str
         The ID of the biomass reaction in the model.
+    max_cycle : int
+        The cycle where the biomass stops increasing.
     output_folder : str
         The path to the folder to save the plot to.
     definitions : list
@@ -157,7 +173,7 @@ def plot_cue(model, experiment, biomass_rxn, output_folder,
                                             co2_ex_rxn="EX_cpd00011_e0"))
         bge_list.append(gem2cue.calculate_bge(ex_fluxes, biomass_flux,
                                             co2_ex_rxn="EX_cpd00011_e0"))
-    
+
     # Calculate the cumulative CUE
     media = experiment.media.copy()
     # Get the initial concentration of glucose
@@ -166,6 +182,7 @@ def plot_cue(model, experiment, biomass_rxn, output_folder,
     co2_conc = media[media.metabolite == 'cpd00011_e0'].iloc[0].conc_mmol
 
     # Calculate the cumulative CUE for each cycle
+    cycle_list = experiment.fluxes_by_species['']['cycle'].tolist()
     cumulative_cue = []
     for i in range(len(cue_list)):
         # Get the cumulative CO2
@@ -188,7 +205,6 @@ def plot_cue(model, experiment, biomass_rxn, output_folder,
         cumulative_cue.append(1 - cumulative_co2 / cumulative_glc)
 
     # Plot the specified values for each cycle
-    cycle_list = experiment.fluxes_by_species['']['cycle'].tolist()
     fig, ax = plt.subplots()
     if 'cue' in definitions:
         plt.plot(cycle_list, cue_list, label="CUE")
@@ -201,7 +217,7 @@ def plot_cue(model, experiment, biomass_rxn, output_folder,
 
     ax.set_ylabel("Value")
     # ax.set_ylim(0, 1) # Would need to increase the upper limit so that the line is visible
-    ax.set_xlim(0, max(cycle_list))
+    ax.set_xlim(0, max_cycle)
     ax.set_xticklabels([tick._x/100 for tick in ax.get_xticklabels()])
     ax.set_xlabel("Time (hours)")
     plt.legend()
