@@ -59,11 +59,11 @@ def main():
 
         # TODO: Run model and calculate CUE
         solution = model.optimize()
-        u_fluxes, ex_fluxes, biomass_flux = gem2cue.get_c_ex_rxn_fluxes(model,
-                                                                        solution,
-                                                                        c_ex_rxns,
-                                                                        biomass_rxn,
-                                                                        'COBRApy')
+        u_fluxes, ex_fluxes, _ = gem2cue.get_c_ex_rxn_fluxes(model,
+                                                             solution,
+                                                             c_ex_rxns,
+                                                             biomass_rxn,
+                                                             'COBRApy')
         cue = gem2cue.calculate_cue(u_fluxes, ex_fluxes, co2_ex_rxn="EX_cpd00011_e0")
 
         # Save
