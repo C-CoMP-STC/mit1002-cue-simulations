@@ -67,7 +67,10 @@ def main():
         cue = gem2cue.calculate_cue(u_fluxes, ex_fluxes, co2_ex_rxn="EX_cpd00011_e0")
 
         # Save
-        d = {'vm': vm, 'biomass': solution.objective_value, 'cue': cue}
+        d = {'vm': vm,
+             'biomass': solution.objective_value,
+             'atpm_flux': solution.fluxes.ATPM,
+             'cue': cue}
         data.append(d)
 
     # Convert the results to a pandas dataframe
