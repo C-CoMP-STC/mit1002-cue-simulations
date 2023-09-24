@@ -76,10 +76,6 @@ def main():
     # Convert the results to a pandas dataframe
     df = pd.DataFrame(data)
 
-    # Make a custom color map for plotting
-    # Goes from Light blue to Dark blue
-    cmap2 = CustomCmap([0.5686, 0.8314, 0.8627], [0, 0.2588, 0.388])
-
     # Plot the results
     g = sns.relplot(x='vm', y='cue', data=df, kind='line', marker='o',
                     height=3)
@@ -87,26 +83,6 @@ def main():
 
     # Save the figure
     g.savefig(os.path.join(OUT_DIR, 'cue_vs_atpm.png'), dpi=300)
-
-
-# Make a custom color map
-def CustomCmap(from_rgb, to_rgb):
-
-    # from color r,g,b
-    r1, g1, b1 = from_rgb
-
-    # to color r,g,b
-    r2, g2, b2 = to_rgb
-
-    cdict = {'red': ((0, r1, r1),
-                     (1, r2, r2)),
-             'green': ((0, g1, g1),
-                       (1, g2, g2)),
-             'blue': ((0, b1, b1),
-                      (1, b2, b2))}
-
-    cmap = matplotlib.colors.LinearSegmentedColormap('custom_cmap', cdict)
-    return cmap
 
 
 if __name__ == "__main__":
