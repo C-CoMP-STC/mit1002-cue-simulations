@@ -28,7 +28,7 @@ def main():
     # TODO: Use an uptake rate based on the NMR data
     glc_medium = {'EX_cpd00027_e0': 10,  # D-Glucose_e0
                   # Not sure what value to use for oxygen
-                  'EX_cpd00007_e0': 1000,  # O2_e0
+                  'EX_cpd00007_e0': 20,  # O2_e0
                   # Remaining minimal media components
                   'EX_cpd00058_e0': 1000,  # Cu2+_e0
                   'EX_cpd00971_e0': 1000,  # Na+_e0
