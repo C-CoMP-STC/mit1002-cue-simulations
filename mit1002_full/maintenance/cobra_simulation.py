@@ -53,7 +53,7 @@ def main():
     # Optimize and calculate CUE for a range of maintenance values
     # Save the maintenance values, biomass, and CUE to a dictionary in a list
     data = []
-    for vm in np.linspace(0, 20, 5):
+    for vm in np.linspace(0, 100, 5):
         # Update maintainance flux
         model.reactions.ATPM.lower_bound = vm
 
@@ -82,7 +82,7 @@ def main():
 
     # Plot the results
     g = sns.relplot(x='vm', y='cue', data=df, kind='line', marker='o',
-                    height=3, palette=cmap2)
+                    height=3)
     g.set_axis_labels("ATPM Flux (mmol / [gDW h])", "CUE")
 
     # Save the figure
