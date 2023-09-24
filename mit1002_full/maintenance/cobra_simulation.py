@@ -1,6 +1,5 @@
 import cobra
 import numpy as np
-import matplotlib
 import seaborn as sns
 import pandas as pd
 import os
