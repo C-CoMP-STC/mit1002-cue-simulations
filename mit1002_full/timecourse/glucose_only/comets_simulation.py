@@ -15,7 +15,6 @@ OUT_DIR = os.path.dirname(os.path.realpath(__file__))
 test_tube = c.layout()
 
 # Set glucose os 0.002, everything else as 1000
-# TODO: Check this is correct
 # I chose 0.002 because that is equivalent to what Zac used in the lab
 # He used 12 mmol/L carbon, and I am modeling 1 mL of media, so 12 mmol/L
 # * (0.1L/100 mL) = 0.012 mmol/mL carbon. And glucose has 6 carbons, so
