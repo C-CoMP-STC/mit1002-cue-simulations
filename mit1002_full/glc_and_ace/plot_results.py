@@ -35,15 +35,15 @@ def main():
     ########################################################################
     # Barchart of all reactions that consume glucose or acetate
     ########################################################################
-    plot_glc_and_ace_fluxes(model,
-                            glc_only_fba.fluxes,
-                            'Glucose Only')
-    plot_glc_and_ace_fluxes(model,
-                            ace_only_fba.fluxes,
-                            'Acetate Only')
-    plot_glc_and_ace_fluxes(model,
-                            mix_fba.fluxes,
-                            'Mixed Media (Glucose and Acetate)')
+    plot_all_fluxes(model,
+                    glc_only_fba.fluxes,
+                    'Glucose Only')
+    plot_all_fluxes(model,
+                    ace_only_fba.fluxes,
+                    'Acetate Only')
+    plot_all_fluxes(model,
+                    mix_fba.fluxes,
+                    'Mixed Media (Glucose and Acetate)')
 
 
 def plot_glc_and_ace_fluxes(model: cobra.Model, solution_fluxes: dict,
@@ -104,9 +104,7 @@ def plot_glc_and_ace_fluxes(model: cobra.Model, solution_fluxes: dict,
     ax1.plot([0, 1], [0, 0], transform=ax1.transAxes, **kwargs)
     ax2.plot([0, 1], [1, 1], transform=ax2.transAxes, **kwargs)
 
-
-    plt.xticks(range(len(fluxes_to_plot)),
-            list(fluxes_to_plot.keys()))
+    plt.xticks(range(len(fluxes_to_plot)), list(fluxes_to_plot.keys()))
     # Turn the x-axis labels sideways
     plt.xticks(rotation=90)
     # Add a title
@@ -116,6 +114,61 @@ def plot_glc_and_ace_fluxes(model: cobra.Model, solution_fluxes: dict,
 
     # Save the plot
     plot_name = 'glc_and_ace_fluxes_' + plot_title.replace(" ", "_").lower() + '.png'
+    plt.savefig(os.path.join(OUTPUT_FOLDER, plot_name))
+
+
+def plot_all_fluxes(model: cobra.Model, solution_fluxes: dict,
+                    plot_title: str):
+    """Plot all the fluxes as a bar chart"""
+    # Sort the fluxes into a few categories- biomass, maintenance, exchange, and everything else
+    # and within those categories, sort by magnitude
+    biomass_rxns = {}
+    maintenance_rxns = {}
+    exchange_rxns = {}
+    other_rxns = {}
+
+    # Get a list of all the exchange reactions in the model
+    ex_rxn_ids = cobra.medium.boundary_types.find_boundary_types(model, "exchange", "e0")
+
+    for id in solution_fluxes.keys():
+        if id == 'bio1_biomass':
+            biomass_rxns[id] = solution_fluxes[id]
+        elif id == 'ATPM':
+            maintenance_rxns[id] = solution_fluxes[id]
+        elif id in ex_rxn_ids:
+            exchange_rxns[id] = solution_fluxes[id]
+        else:
+            other_rxns[id] = solution_fluxes[id]
+
+    # Sort the dictionaries by value
+    # Sort exchanges from lowest to highest
+    exchange_rxns = dict(sorted(exchange_rxns.items(), key=lambda item: item[1]))
+    # Sort the other reactions from highest to lowest
+    other_rxns = dict(sorted(other_rxns.items(), key=lambda item: item[1], reverse=True))
+
+    # Combine the dictionaries back together
+    fluxes_to_plot = {**biomass_rxns, **maintenance_rxns, **exchange_rxns, **other_rxns}
+
+    # Update the dict to have the whole reaction name, not just the ID
+    for id in solution_fluxes.keys():
+        rxn_name = model.reactions.get_by_id(id).name
+        fluxes_to_plot[id + ' (' + rxn_name + ')'] = solution_fluxes[id]
+
+    # Barchart
+    plt.figure(figsize=(50, 10))  # Make figure large enough for reaction names
+    plt.bar(range(len(fluxes_to_plot)),
+            list(fluxes_to_plot.values()),
+            align='center')
+    plt.xticks(range(len(fluxes_to_plot)), list(fluxes_to_plot.keys()))
+    # Turn the x-axis labels sideways
+    plt.xticks(rotation=90)
+    # Add a title
+    plt.title('Fluxes for FBA on ' + plot_title)
+    # Tight layout so that the captions don't run off the page
+    plt.tight_layout()
+
+    # Save the plot
+    plot_name = 'all_fluxes_' + plot_title.replace(" ", "_").lower() + '.png'
     plt.savefig(os.path.join(OUTPUT_FOLDER, plot_name))
 
 
