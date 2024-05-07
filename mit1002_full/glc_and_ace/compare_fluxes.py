@@ -85,7 +85,7 @@ def plot_scatter_flux_comparison(model: cobra.Model, sol1_fluxes: dict,
 
     # Save the plot as a html file
     plot_file = os.path.join(OUTPUT_FOLDER, 
-                             f'{sol1_title.replace(" ", "_").lower()}_vs_{sol2_title}.html')
+                             f'{sol1_title.replace(" ", "_").lower()}_vs_{sol2_title.replace(" ", "_").lower()}.html')
     fig.write_html(plot_file)
 
 
