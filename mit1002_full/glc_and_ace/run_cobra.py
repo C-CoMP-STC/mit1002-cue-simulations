@@ -56,7 +56,7 @@ ace_medium = {'EX_cpd00029_e0': 10,  # Acetate_e0
               }
 
 # Make a medium with both glucose and acetate
-# FIXME: Need the equivlant amount of carbon available in the medium
+# FIXME: Need the equivalent amount of carbon available in the medium
 mix_medium = {'EX_cpd00027_e0': 10,  # D-Glucose_e0
               'EX_cpd00029_e0': 10,  # Acetate_e0
               'EX_cpd00007_e0': 1000,  # O2_e0
