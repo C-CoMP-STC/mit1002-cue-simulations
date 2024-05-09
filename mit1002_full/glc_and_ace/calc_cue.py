@@ -8,12 +8,6 @@ from gem2cue import (
     utils,  # Import the working version (works with the med4-hot1a3 conda env)
 )
 
-# Import the plot styles (has global variables for colors)
-sys.path.append(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-)
-from plot_styles import *
-
 # Set the output directory
 OUT_DIR = os.path.dirname(os.path.realpath(__file__))
 
