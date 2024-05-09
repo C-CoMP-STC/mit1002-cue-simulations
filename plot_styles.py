@@ -20,8 +20,8 @@ def set_plot_style(g):
 
 
 def carbon_fates_bar(data):
-    # Check that the column names are correct. Does this check for the order of the columns?
-    assert set(data.columns) == set(["biomass", "organic_c", "co2"])
+    # Check that the column names and order are correct
+    assert data.columns.to_list() == ["biomass", "organic_c", "co2"]
     # Plot the stacked bar plot
     g = data.plot(kind="bar", stacked=True, color=[DARK_BLUE, LIGHT_BLUE, ORANGE])
     # Move the legend outside of the plot
