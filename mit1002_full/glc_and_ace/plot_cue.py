@@ -39,7 +39,7 @@ condition_names = ["glc_inf_o2 (FBA)",
 results["condition"] = condition_names
 
 # Stacked bar plot of the carbon fates for the different conditions
-data = results.set_index("condition")[["co2", "organic_c", "biomass"]]
+data = results.set_index("condition")[["biomass", "organic_c", "co2"]]
 g = carbon_fates_bar(data)
 g.set_xlabel("Simulation Conditions", color="gray")
 g.set_ylabel("Carbon Flux (mmol C/ mmol C)", color="gray")  # TODO: Check the units
