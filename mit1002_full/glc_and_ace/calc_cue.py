@@ -17,12 +17,6 @@ from plot_styles import *
 # Set the output directory
 OUT_DIR = os.path.dirname(os.path.realpath(__file__))
 
-# Set a folder for the plots
-output_folder = os.path.join(OUT_DIR, "plots")
-# Check if the folder exists, if not, create it
-if not os.path.exists(output_folder):
-    os.makedirs(output_folder)
-
 # Load the model and get the exchange reactions
 model = cobra.io.read_sbml_model("../../GEM-repos/mit1002-model/model.xml")
 c_ex_rxns = utils.get_c_ex_rxns(model)
