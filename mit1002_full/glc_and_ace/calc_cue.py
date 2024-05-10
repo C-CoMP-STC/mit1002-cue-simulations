@@ -43,12 +43,17 @@ for idx, fba_result in enumerate(cobra_results):
     else:
         method = "pFBA"
 
-    # Extract the carbon fates for the solution
+    # Extract the carbon fates for the solution (both normalized and not normalized)
     c_fates = utils.extract_c_fates_from_solution(fba_result, c_ex_rxns, co2_ex_rxn='EX_cpd00011_e0', norm=False)
     uptake = c_fates[0]
     co2 = c_fates[1]
     organic_c = c_fates[2]
     biomass = c_fates[3]
+
+    c_fates_norm = utils.extract_c_fates_from_solution(fba_result, c_ex_rxns, co2_ex_rxn='EX_cpd00011_e0', norm=True)
+    co2_norm = c_fates_norm[0]
+    organic_c_norm = c_fates_norm[1]
+    biomass_norm = c_fates_norm[2]
 
     # Calculate CUE from the c fates (not using my function)
     cue = 1 - co2 / uptake
@@ -61,9 +66,13 @@ for idx, fba_result in enumerate(cobra_results):
             "method": method,
             "oxygen_flux": fba_result.fluxes["EX_cpd00007_e0"],
             "uptake": uptake,
+            "uptake_norm": 1,  # This is always 1 because the uptake is the reference
             "co2": co2,
+            "co2_norm": co2_norm,
             "organic_c": organic_c,
+            "organic_c_norm": organic_c_norm,
             "biomass": biomass,
+            "biomass_norm": biomass_norm,
             "cue": cue,
             "gge": gge,
         }

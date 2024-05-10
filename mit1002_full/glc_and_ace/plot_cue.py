@@ -44,3 +44,10 @@ results["condition"] = condition_names
 data = results.set_index("condition")[["biomass", "organic_c", "co2"]]
 g = carbon_fates_bar(data)
 plt.savefig(os.path.join(output_folder, "carbon_fates.png"))
+
+# Stacked bar plot of the normalized carbon fates for the different conditions
+data_norm = results.set_index("condition")[["biomass_norm", "organic_c_norm", "co2_norm"]]
+# Rename the columns to match the function
+data_norm.columns = ["biomass", "organic_c", "co2"]
+g_norm = carbon_fates_bar(data_norm)
+plt.savefig(os.path.join(output_folder, "carbon_fates_norm.png"))
