@@ -22,31 +22,13 @@ if not os.path.exists(output_folder):
 # Load the results
 results = pd.read_csv(os.path.join(OUT_DIR, "results.csv"))
 
-# Add a column for the condition name with a list of names
-# FIXME: This is fragile to the order of the results- find a way to use the solution directly
-condition_names = [
-    "Glucose & Infinite O2 (FBA)",
-    "Glucose & Infinite O2 (pFBA)",
-    "Glucose & Limited O2 (FBA)",
-    "Glucose & Limited O2 (pFBA)",
-    "Acetate & Infinite O2 (FBA)",
-    "Acetate & Infinite O2 (pFBA)",
-    "Acetate & Limited O2 (FBA)",
-    "Acetate & Limited O2 (pFBA)",
-    "Mixture & Infinite O2 (FBA)",
-    "Mixture & Infinite O2 (pFBA)",
-    "Mixture & Limited O2 (FBA)",
-    "Mixture & Limited O2 (pFBA)",
-]
-results["condition"] = condition_names
-
 # Stacked bar plot of the carbon fates for the different conditions
-data = results.set_index("condition")[["biomass", "organic_c", "co2"]]
+data = results.set_index("sim_name")[["biomass", "organic_c", "co2"]]
 g = carbon_fates_bar(data)
 plt.savefig(os.path.join(output_folder, "carbon_fates.png"))
 
 # Stacked bar plot of the normalized carbon fates for the different conditions
-data_norm = results.set_index("condition")[["biomass_norm", "organic_c_norm", "co2_norm"]]
+data_norm = results.set_index("sim_name")[["biomass_norm", "organic_c_norm", "co2_norm"]]
 # Rename the columns to match the function
 data_norm.columns = ["biomass", "organic_c", "co2"]
 g_norm = carbon_fates_bar(data_norm)
