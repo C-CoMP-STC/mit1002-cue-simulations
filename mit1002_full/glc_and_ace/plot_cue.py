@@ -25,18 +25,18 @@ results = pd.read_csv(os.path.join(OUT_DIR, "results.csv"))
 # Add a column for the condition name with a list of names
 # FIXME: This is fragile to the order of the results- find a way to use the solution directly
 condition_names = [
-    "glc_inf_o2 (FBA)",
-    "glc_inf_o2 (pFBA)",
-    "glc_lim_o2 (FBA)",
-    "glc_lim_o2 (pFBA)",
-    "ace_inf_o2 (FBA)",
-    "ace_inf_o2 (pFBA)",
-    "ace_lim_o2 (FBA)",
-    "ace_lim_o2 (pFBA)",
-    "mix_inf_o2 (FBA)",
-    "mix_inf_o2 (pFBA)",
-    "mix_lim_o2 (FBA)",
-    "mix_lim_o2 (pFBA)",
+    "Glucose & Infinite O2 (FBA)",
+    "Glucose & Infinite O2 (pFBA)",
+    "Glucose & Limited O2 (FBA)",
+    "Glucose & Limited O2 (pFBA)",
+    "Acetate & Infinite O2 (FBA)",
+    "Acetate & Infinite O2 (pFBA)",
+    "Acetate & Limited O2 (FBA)",
+    "Acetate & Limited O2 (pFBA)",
+    "Mixture & Infinite O2 (FBA)",
+    "Mixture & Infinite O2 (pFBA)",
+    "Mixture & Limited O2 (FBA)",
+    "Mixture & Limited O2 (pFBA)",
 ]
 results["condition"] = condition_names
 
