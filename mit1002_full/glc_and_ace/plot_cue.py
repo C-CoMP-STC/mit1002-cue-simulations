@@ -25,7 +25,7 @@ results = pd.read_csv(os.path.join(OUT_DIR, "results.csv"))
 # Add a column for the condition name with a list of names
 # FIXME: This is fragile to the order of the results- find a way to use the solution directly
 condition_names = [
-    "Glucose & Infinite O2 (FBA)",
+    "glc_inf_o2 (FBA)",
     "glc_inf_o2 (pFBA)",
     "glc_lim_o2 (FBA)",
     "glc_lim_o2 (pFBA)",
