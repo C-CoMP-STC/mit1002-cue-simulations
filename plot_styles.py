@@ -45,7 +45,6 @@ def carbon_fates_bar(data):
         text.set_color("gray")
     # Style
     set_plot_style(g)
-    
 
     # Return the plot
     return g
