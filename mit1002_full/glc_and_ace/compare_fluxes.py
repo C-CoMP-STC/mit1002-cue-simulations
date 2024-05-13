@@ -23,12 +23,8 @@ def main():
     with open(os.path.join(OUT_DIR, 'results.pkl'), 'rb') as f:
         cobra_results = pickle.load(f)
 
-    glc_only_fba = cobra_results[0]
-    glc_only_pfba = cobra_results[1]
-    ace_only_fba = cobra_results[2]
-    ace_only_pfba = cobra_results[3]
-    mix_fba = cobra_results[4]
-    mix_pfba = cobra_results[5]
+    glc_only_fba = cobra_results["glc_medium_real_o2_fba"]
+    ace_only_fba = cobra_results["ace_medium_real_o2_fba"]
 
     # Load in the ALT model using COBRApy
     model = cobra.io.read_sbml_model(os.path.join(MODEL_DIR, 'model.xml'))
