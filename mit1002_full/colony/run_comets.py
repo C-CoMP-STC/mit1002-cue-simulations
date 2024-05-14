@@ -42,7 +42,7 @@ comets_model.initial_pop = [30, 30, 1e-6]
 layout.add_model(comets_model)
 
 # Add 11mM glucose
-layout.set_specific_metabolite("cpd00027_e0", 0.011)
+layout.set_specific_metabolite("cpd00027_e0", 1e-5)
 
 # Add plenty of oxygen
 # FIXME: Should this be lower? to get a realistic bound on O2 flux?
