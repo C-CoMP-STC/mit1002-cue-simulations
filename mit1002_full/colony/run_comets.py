@@ -69,23 +69,25 @@ layout.set_specific_metabolite("cpd00149_e0", 1000)  # Co2+_e0
 
 # Set the parameters that are different from the default
 sim_params = c.params()
-sim_params.set_param("biomassMotionStyle", "ConvNonlin Diffusion 2D")
-sim_params.set_param("numDiffPerStep", 1)
-sim_params.set_param("growthDiffRate", 0)
-sim_params.set_param("allowCellOverlap", True)
-sim_params.set_param("toroidalWorld", False)
-sim_params.set_param("defaultVmax", 10)
-sim_params.set_param("defaultKm", 0.000015)
-sim_params.set_param("maxCycles", 3000)
+sim_params.set_param("numRunThreads", 1)
 sim_params.set_param("timeStep", 0.1)
-sim_params.set_param("spaceWidth", 0.01)
-sim_params.set_param("maxSpaceBiomass", 10)
-sim_params.set_param("minSpaceBiomass", 1e-9)
-sim_params.set_param("writeMediaLog", True)
-sim_params.set_param("writeFluxLog", True)
+sim_params.set_param("spaceWidth", 0.05)
+sim_params.set_param("maxCycles", 1000)
+sim_params.set_param("maxSpaceBiomass", 100)
 sim_params.set_param("writeBiomassLog", True)
-sim_params.set_param("BiomassLogRate", 100)
-sim_params.set_param("FluxLogRate", 100)
+sim_params.set_param("BiomassLogRate", 10)
+sim_params.set_param("writeMediaLog", True)  # Ilija didn't set- but I know I need
+sim_params.set_param("writeFluxLog", True)  # Ilija didn't set- but I know I need
+sim_params.set_param("FluxLogRate", 10)
+sim_params.set_param("defaultVmax", 10)
+sim_params.set_param("defaultDiffConst", 6.0e-6)
+sim_params.set_param("defaultKm", 0.000015)
+sim_params.set_param("biomassMotionStyle", "ConvNonlin Diffusion 2D")
+# Wasn't in example from Ilija
+# sim_params.set_param("numDiffPerStep", 1)
+# sim_params.set_param("growthDiffRate", 0)
+# sim_params.set_param("allowCellOverlap", True)
+# sim_params.set_param("toroidalWorld", False)
 
 # Create the experiment
 experiment = c.comets(layout, sim_params)
