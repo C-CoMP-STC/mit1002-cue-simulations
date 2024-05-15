@@ -37,6 +37,42 @@ data_norm.columns = ["biomass", "organic_c", "co2"]
 g_norm = carbon_fates_bar(data_norm)
 plt.savefig(os.path.join(output_folder, "carbon_fates_norm.png"))
 
+# Order the bars by the number of carbon atoms
+results = results.sort_values("c_num")
+# Make a new column with the name of the carbon source and the number of carbon atoms
+results.index = results["c_source"] + " (" + results["c_num"].astype(str) + " C)"
+data = results[["biomass_norm", "organic_c_norm", "co2_norm"]]
+# Rename the columns to match the function
+data.columns = ["biomass", "organic_c", "co2"]
+g = carbon_fates_bar(data)
+g.set_title("Carbon Fate with Increasing Number of Carbon Atoms", color="gray")
+plt.savefig(os.path.join(output_folder, "c_fate_by_c_num.png"))
+
+# Order the bars by the C:N ratio
+results = results.sort_values("cn_ratio")
+# Add the C:N ratio to the x-axis labels
+results.index  = results["c_source"] + " (C:N = " + results["cn_ratio"].astype(str) + ")"
+data = results[["biomass_norm", "organic_c_norm", "co2_norm"]]
+# Rename the columns to match the function
+data.columns = ["biomass", "organic_c", "co2"]
+g = carbon_fates_bar(data)
+g.set_title("Carbon Fates with Increasing C:N Ratio", color="gray")
+plt.savefig(os.path.join(output_folder, "c_fate_by_cn_ratio.png"))
+
+# Round the degree of reduction column to 2 decimal places
+results["deg_of_reduction"] = results["deg_of_reduction"].round(2)
+
+# Order the bars by the degree of reduction
+results = results.sort_values("deg_of_reduction")
+# Add the degree of reduction to the x-axis labels
+results.index = results["c_source"] + " (Reduction = " + results["deg_of_reduction"].round(2).astype(str) + ")"
+data = results[["biomass_norm", "organic_c_norm", "co2_norm"]]
+# Rename the columns to match the function
+data.columns = ["biomass", "organic_c", "co2"]
+g = carbon_fates_bar(data)
+g.set_title("Carbon Fates with Increasing Degree of Reduction", color="gray")
+plt.savefig(os.path.join(output_folder, "c_fate_by_deg_of_reduction.png"))
+
 # Scatter plot of CUE/GGE vs the number of carbons in the carbon source
 g = results.plot.scatter(x="c_num", y="cue", color=LIGHT_BLUE)
 g.set_xlabel("Number of Carbon Atoms", color="gray")
