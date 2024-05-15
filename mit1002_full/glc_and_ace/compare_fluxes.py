@@ -40,6 +40,14 @@ def main():
     model = cobra.io.read_sbml_model(os.path.join(MODEL_DIR, "model.xml"))
 
     # Scatterplot comparing the fluxes on glucose only and acetate only
+    plot_scatter_flux_comparison(model,
+                                 glc_only_fba.fluxes,
+                                 ace_only_fba.fluxes,
+                                 'Glucose Only',
+                                 'Acetate Only')
+
+    # Scatterplot comparing the sum of the fluxes on glucose only and acetate
+    # only with the fluxes on the two mixtures
     plot_scatter_flux_comparison(
         model,
         glc_only_fba.fluxes + ace_only_fba.fluxes,
@@ -54,9 +62,6 @@ def main():
         "Glucose Only + Acetate Only",
         "4mM Glucose & 8mM Acetate Mixture",
     )
-
-    # Scatterplot comparing the sum of the fluxes on glucose only and acetate
-    # only with the fluxes on the two mixtures
 
     # Table of the reactions with the biggest differences in flux between the two solutions
     db = make_table_flux_comparison(
