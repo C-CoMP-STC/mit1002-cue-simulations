@@ -149,14 +149,22 @@ df.columns = ["Infinite O2", "Realistic O2"]
 # Make the index a column
 df.reset_index(inplace=True)
 
-# Plot
+# Plot a grouped bar chart with the infinite and realistic O2 conditions for each model/medium pair
 g = df.plot(x="index", kind="bar", stacked=False, title="Growth on Glucose and Acetate", color=[DARK_BLUE, LIGHT_BLUE])
-
 # Plot style
 g.set_xlabel(None)
 g.set_ylabel("Biomass Flux (mmol/gDW hr)", color="gray")
 plt.tight_layout()
 set_plot_style(g)
-
 # Save
 plt.savefig(os.path.join(output_folder, "growth_comparison.png"))
+
+# Plot just the realistic O2 conditions
+g = df.plot(x="index", y="Realistic O2", kind="bar", title="Growth on Glucose and Acetate", color=LIGHT_BLUE)
+# Plot style
+g.set_xlabel(None)
+g.set_ylabel("Biomass Flux (mmol/gDW hr)", color="gray")
+plt.tight_layout()
+set_plot_style(g)
+# Save
+plt.savefig(os.path.join(output_folder, "growth_comparison_realistic_o2.png"))
