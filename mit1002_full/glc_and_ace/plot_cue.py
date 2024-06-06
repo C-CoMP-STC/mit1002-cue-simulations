@@ -33,3 +33,14 @@ data_norm = results.set_index("sim_name")[["biomass_norm", "organic_c_norm", "co
 data_norm.columns = ["biomass", "organic_c", "co2"]
 g_norm = carbon_fates_bar(data_norm)
 plt.savefig(os.path.join(output_folder, "carbon_fates_norm.png"))
+
+# Subset the results to only include the pFBA on realistic O2
+clean_data = data_norm[data_norm.index.str.contains("real_o2_pfba")]
+g_clean = carbon_fates_bar(clean_data)
+# Relabel the x tick labels
+g_clean.set_xticklabels(
+    ["Glucose", "Acetate", "Heavy Glucose Mix", "Heavy Acetate Mix"]
+)
+plt.tight_layout()
+plt.savefig(os.path.join(output_folder, "carbon_fates_norm_clean.png"))
+
