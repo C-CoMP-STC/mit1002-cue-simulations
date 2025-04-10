@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 LIGHT_BLUE = "#3CB3C0"
 DARK_BLUE = "#024064"
 ORANGE = "#FF6C2C"
+# Define light orange, used on ISME poster
+LIGHT_ORANGE = "#FFBB62"
 
 
 # Define the style for the plots (gray axes, no top or right axis lines)
@@ -20,31 +22,28 @@ def set_plot_style(g):
 
 
 def carbon_fates_bar(data):
-    # Check that the column names and order are correct
-    assert data.columns.to_list() == ["biomass", "organic_c", "co2"]
+    # Check that the column names are correct
+    assert set(data.columns) == set(["co2", "organic_c", "biomass"])
     # Plot the stacked bar plot
-    g = data.plot(kind="bar", stacked=True, color=[DARK_BLUE, LIGHT_BLUE, ORANGE])
-    # Add the title and axis labels (in gray)
-    g.set_title("Fate of Carbon", color="gray")
-    g.set_xlabel("Simulation Conditions", color="gray")
-    g.set_ylabel("Carbon Flux (mmol C/ mmol C)", color="gray")  # TODO: Check the units
-    # Use tight layout so that the axis labels are not cut off
-    plt.tight_layout()
+    g = data.plot(kind="bar", stacked=True, color=[LIGHT_ORANGE, LIGHT_BLUE, DARK_BLUE])
     # Move the legend outside of the plot
-    custom_labels = ["Biomass", "Organic C", "CO2"]
+    custom_labels = ["CO2", "Organic C", "Biomass"]
     lgd = plt.legend(
-        bbox_to_anchor=(1, 0.5),
-        loc="center left",
-        borderaxespad=1,
+        bbox_to_anchor=(0.5, -0.20),
+        loc="upper center",
+        borderaxespad=0.0,
+        ncol=3,
         labels=custom_labels,
     )
-    # Extend the plot area to fit the legend
-    plt.subplots_adjust(right=0.75)
     # Make the legend text gray too
     for text in lgd.get_texts():
         text.set_color("gray")
+    # Adjust the bottom margin
+    plt.subplots_adjust(bottom=0.2)
     # Style
     set_plot_style(g)
+    # Title the plot and make it gray
+    g.set_title("Fate of Carbon", color="gray")
 
     # Return the plot
     return g
