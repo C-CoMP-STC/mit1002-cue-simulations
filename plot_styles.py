@@ -29,12 +29,12 @@ def carbon_fates_bar(data):
     # Plot the stacked bar plot
     g = data.plot(kind="bar", stacked=True, color=[DARK_BLUE, LIGHT_BLUE, LIGHT_ORANGE])
     # Move the legend outside of the plot
-    custom_labels = ["CO2", "Organic C", "Biomass"]
+    custom_labels = ["Biomass", "Organic C", "CO2"]
     lgd = plt.legend(
-        bbox_to_anchor=(0.5, -0.20),
-        loc="upper center",
+        bbox_to_anchor=(1.25, 0.5),
+        loc="center right",
         borderaxespad=0.0,
-        ncol=3,
+        ncol=1,
         labels=custom_labels,
     )
     # Make the legend text gray too
