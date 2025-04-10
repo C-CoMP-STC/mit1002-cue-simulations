@@ -22,6 +22,10 @@ with open(os.path.join(OUT_DIR, "results.pkl"), "rb") as f:
 # Extract the carbon fate results from the FBA results and save them in a DataFrame
 results_list = []
 for key, fba_result in cobra_results.items():
+    # Escape if the the model isn't growing
+    if not fba_result.objective_value > 1e-6:
+        print(f"Skipping {key} because the model is not growing")
+        continue
     # Extract the carbon fates for the solution (both normalized and not normalized)
     c_fates = utils.extract_c_fates_from_solution(
         fba_result, c_ex_rxns, co2_ex_rxn="EX_cpd00011_e0", norm=False

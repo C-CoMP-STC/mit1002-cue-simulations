@@ -46,7 +46,7 @@ gge_df.loc["FBA"] = {
 gge_df_transposed = gge_df.T
 
 # Create a scatter plot of the two rows
-plt.scatter(gge_df_transposed["Experimental"], gge_df_transposed["FBA"], label="Experimental vs FBA")
+plt.scatter(gge_df_transposed["Experimental"], gge_df_transposed["FBA"], label="Model v2 (O2=20)")
 
 # Add a line of best fit
 # Calculate the coefficients for the line of best fit
@@ -55,7 +55,7 @@ m, b = np.polyfit(gge_df_transposed["Experimental"], gge_df_transposed["FBA"], 1
 x_fit = np.array([0, 1])
 y_fit = m * x_fit + b
 # Plot the line of best fit
-plt.plot(x_fit, y_fit, color="blue", label="Line of Best Fit")
+plt.plot(x_fit, y_fit, color="blue", label=None)
 
 # Add a 1:1 line for reference
 x = [0, 1]
