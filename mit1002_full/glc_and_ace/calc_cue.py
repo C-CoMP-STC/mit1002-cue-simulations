@@ -12,7 +12,7 @@ from gem2cue import (
 OUT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 # Load the model and get the exchange reactions
-model = cobra.io.read_sbml_model("../../GEM-repos/mit1002-model/model.xml")
+model = cobra.io.read_sbml_model("../../GEM-repos/GEM-mit1002/model.xml")
 c_ex_rxns = utils.get_c_ex_rxns(model)
 
 # Load the results
@@ -23,13 +23,17 @@ with open(os.path.join(OUT_DIR, "results.pkl"), "rb") as f:
 results_list = []
 for key, fba_result in cobra_results.items():
     # Extract the carbon fates for the solution (both normalized and not normalized)
-    c_fates = utils.extract_c_fates_from_solution(fba_result, c_ex_rxns, co2_ex_rxn='EX_cpd00011_e0', norm=False)
+    c_fates = utils.extract_c_fates_from_solution(
+        fba_result, c_ex_rxns, co2_ex_rxn="EX_cpd00011_e0", norm=False
+    )
     uptake = c_fates[0]
     co2 = c_fates[1]
     organic_c = c_fates[2]
     biomass = c_fates[3]
 
-    c_fates_norm = utils.extract_c_fates_from_solution(fba_result, c_ex_rxns, co2_ex_rxn='EX_cpd00011_e0', norm=True)
+    c_fates_norm = utils.extract_c_fates_from_solution(
+        fba_result, c_ex_rxns, co2_ex_rxn="EX_cpd00011_e0", norm=True
+    )
     co2_norm = c_fates_norm[0]
     organic_c_norm = c_fates_norm[1]
     biomass_norm = c_fates_norm[2]

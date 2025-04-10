@@ -7,7 +7,7 @@ import cobra
 OUT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 # Load in the ALT model using COBRApy
-alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-model/model.xml")
+alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/GEM-mit1002/model.xml")
 
 # Make a medium with just glucose
 # TODO: Use an uptake rate based on the NMR data
@@ -28,7 +28,6 @@ glc_medium_inf_o2 = {
     "EX_cpd00030_e0": 1000,  # Mn2+_e0
     "EX_cpd00075_e0": 1000,  # Nitrite_e0
     "EX_cpd00001_e0": 1000,  # H2O_e0
-    "EX_cpd00635_e0": 1000,  # Cbl_e0
     "EX_cpd00034_e0": 1000,  # Zn2+_e0
     "EX_cpd00149_e0": 1000,  # Co2+_e0
 }
@@ -52,7 +51,6 @@ ace_medium_inf_o2 = {
     "EX_cpd00030_e0": 1000,  # Mn2+_e0
     "EX_cpd00075_e0": 1000,  # Nitrite_e0
     "EX_cpd00001_e0": 1000,  # H2O_e0
-    "EX_cpd00635_e0": 1000,  # Cbl_e0
     "EX_cpd00034_e0": 1000,  # Zn2+_e0
     "EX_cpd00149_e0": 1000,  # Co2+_e0
 }
@@ -77,7 +75,6 @@ glc_heavy_mix_medium_inf_o2 = {
     "EX_cpd00030_e0": 1000,  # Mn2+_e0
     "EX_cpd00075_e0": 1000,  # Nitrite_e0
     "EX_cpd00001_e0": 1000,  # H2O_e0
-    "EX_cpd00635_e0": 1000,  # Cbl_e0
     "EX_cpd00034_e0": 1000,  # Zn2+_e0
     "EX_cpd00149_e0": 1000,  # Co2+_e0
 }
@@ -102,7 +99,6 @@ ace_heavy_mix_medium_inf_o2 = {
     "EX_cpd00030_e0": 1000,  # Mn2+_e0
     "EX_cpd00075_e0": 1000,  # Nitrite_e0
     "EX_cpd00001_e0": 1000,  # H2O_e0
-    "EX_cpd00635_e0": 1000,  # Cbl_e0
     "EX_cpd00034_e0": 1000,  # Zn2+_e0
     "EX_cpd00149_e0": 1000,  # Co2+_e0
 }
@@ -127,7 +123,6 @@ glc_medium_real_o2 = {
     "EX_cpd00030_e0": 1000,  # Mn2+_e0
     "EX_cpd00075_e0": 1000,  # Nitrite_e0
     "EX_cpd00001_e0": 1000,  # H2O_e0
-    "EX_cpd00635_e0": 1000,  # Cbl_e0
     "EX_cpd00034_e0": 1000,  # Zn2+_e0
     "EX_cpd00149_e0": 1000,  # Co2+_e0
 }
@@ -151,7 +146,6 @@ ace_medium_real_o2 = {
     "EX_cpd00030_e0": 1000,  # Mn2+_e0
     "EX_cpd00075_e0": 1000,  # Nitrite_e0
     "EX_cpd00001_e0": 1000,  # H2O_e0
-    "EX_cpd00635_e0": 1000,  # Cbl_e0
     "EX_cpd00034_e0": 1000,  # Zn2+_e0
     "EX_cpd00149_e0": 1000,  # Co2+_e0
 }
@@ -176,7 +170,6 @@ glc_heavy_mix_medium_real_o2 = {
     "EX_cpd00030_e0": 1000,  # Mn2+_e0
     "EX_cpd00075_e0": 1000,  # Nitrite_e0
     "EX_cpd00001_e0": 1000,  # H2O_e0
-    "EX_cpd00635_e0": 1000,  # Cbl_e0
     "EX_cpd00034_e0": 1000,  # Zn2+_e0
     "EX_cpd00149_e0": 1000,  # Co2+_e0
 }
@@ -201,20 +194,21 @@ ace_heavy_mix_medium_real_o2 = {
     "EX_cpd00030_e0": 1000,  # Mn2+_e0
     "EX_cpd00075_e0": 1000,  # Nitrite_e0
     "EX_cpd00001_e0": 1000,  # H2O_e0
-    "EX_cpd00635_e0": 1000,  # Cbl_e0
     "EX_cpd00034_e0": 1000,  # Zn2+_e0
     "EX_cpd00149_e0": 1000,  # Co2+_e0
 }
 
 # Make a dictionary of the media with names
-media = {"glc_medium_inf_o2": glc_medium_inf_o2,
-         "ace_medium_inf_o2": ace_medium_inf_o2,
-         "glc_heavy_mix_medium_inf_o2": glc_heavy_mix_medium_inf_o2,
-         "ace_heavy_mix_medium_inf_o2": ace_heavy_mix_medium_inf_o2,
-         "glc_medium_real_o2": glc_medium_real_o2,
-         "ace_medium_real_o2": ace_medium_real_o2,
-         "glc_heavy_mix_medium_real_o2": glc_heavy_mix_medium_real_o2,
-         "ace_heavy_mix_medium_real_o2": ace_heavy_mix_medium_real_o2}
+media = {
+    "glc_medium_inf_o2": glc_medium_inf_o2,
+    "ace_medium_inf_o2": ace_medium_inf_o2,
+    "glc_heavy_mix_medium_inf_o2": glc_heavy_mix_medium_inf_o2,
+    "ace_heavy_mix_medium_inf_o2": ace_heavy_mix_medium_inf_o2,
+    "glc_medium_real_o2": glc_medium_real_o2,
+    "ace_medium_real_o2": ace_medium_real_o2,
+    "glc_heavy_mix_medium_real_o2": glc_heavy_mix_medium_real_o2,
+    "ace_heavy_mix_medium_real_o2": ace_heavy_mix_medium_real_o2,
+}
 
 # Loop through all the media and run FBA and pFBA and put the results in a dictionary
 cobra_results = {}
