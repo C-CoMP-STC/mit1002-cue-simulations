@@ -1,8 +1,8 @@
 import os
 
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(FILE_DIR, "plots")
@@ -65,25 +65,39 @@ gge_df.loc["FBA (O2=1000)"] = {
     "Acetate Heavy Mix": fba_data.loc["Acetate Heavy Mix(O2 = 1000)_fba", "gge"],
 }
 
+# Order the columns in increasing order (for the Experimental data)
+gge_df_sorted = gge_df[gge_df.loc['Experimental'].sort_values().index]
+
 # Plot the predicted vs experimental
 # Transpose the DataFrame to make rows into columns for easier plotting
-gge_df_transposed = gge_df.T
+gge_df_transposed = gge_df_sorted.T
 
 # Create a scatter plot of the two rows for each of the conditions
 plt.figure(figsize=(8, 8))
-plt.scatter(gge_df_transposed["Experimental"],
-            gge_df_transposed["FBA (O2=5)"],
-            label="Model v2 (O2=5)")
-plt.scatter(gge_df_transposed["Experimental"],
-            gge_df_transposed["FBA (O2=10)"],
-            label="Model v2 (O2=10)")
-plt.scatter(gge_df_transposed["Experimental"],
-            gge_df_transposed["FBA (O2=20)"],
-            label="Model v2 (O2=20)")
-plt.scatter(gge_df_transposed["Experimental"],
-            gge_df_transposed["FBA (O2=30)"],
-            label="Model v2 (O2=30)"
-            )
+plt.plot(
+    gge_df_transposed["Experimental"],
+    gge_df_transposed["FBA (O2=5)"],
+    marker="o",
+    label="Model v2 (O2=5)",
+)
+plt.plot(
+    gge_df_transposed["Experimental"],
+    gge_df_transposed["FBA (O2=10)"],
+    marker="o",
+    label="Model v2 (O2=10)",
+)
+plt.plot(
+    gge_df_transposed["Experimental"],
+    gge_df_transposed["FBA (O2=20)"],
+    marker="o",
+    label="Model v2 (O2=20)",
+)
+plt.plot(
+    gge_df_transposed["Experimental"],
+    gge_df_transposed["FBA (O2=30)"],
+    marker="o",
+    label="Model v2 (O2=30)",
+)
 # Not plotting the O2=1000 data because it is an exact overlap of O2=30
 
 # Save what the bounds are for the axes
@@ -93,24 +107,10 @@ ax = plt.gca()
 x_limits = ax.get_xlim()
 y_limits = ax.get_ylim()
 
-# # Add a line of best fit
-# # Calculate the coefficients for the line of best fit
-# m, b = np.polyfit(gge_df_transposed["Experimental"], gge_df_transposed["FBA"], 1)
-# # Create the line of best fit
-# x_fit = np.array([0, 1])
-# y_fit = m * x_fit + b
-# # Plot the line of best fit
-# plt.plot(x_fit, y_fit, color="blue", label=None)
-
 # Add a 1:1 line for reference
 x = [0, 1]
 y = [0, 1]
 plt.plot(x, y, color="red", linestyle="--", label="1:1 Line")
-
-# Reset the limits to be what they were before
-# (the automatic settings from the scatter plots without the 1:1 line)
-ax.set_xlim(x_limits)
-ax.set_ylim(y_limits)
 
 # Add labels and title
 plt.xlabel("Experimental")
@@ -119,4 +119,13 @@ plt.title("Scatter Plot: Experimental vs FBA")
 plt.legend()
 
 # Save the plot
-plt.savefig(os.path.join(FILE_DIR, "exp_vs_fba.png"), dpi=300)
+plt.savefig(os.path.join(FILE_DIR, "exp_vs_fba_full.png"), dpi=300)
+
+
+# Reset the limits to be what they were before
+# (the automatic settings from the scatter plots without the 1:1 line)
+ax.set_xlim(x_limits)
+ax.set_ylim(y_limits)
+
+# Save the plot
+plt.savefig(os.path.join(FILE_DIR, "exp_vs_fba_zoom.png"), dpi=300)
