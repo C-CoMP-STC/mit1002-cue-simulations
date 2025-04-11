@@ -82,10 +82,16 @@ plt.scatter(gge_df_transposed["Experimental"],
             label="Model v2 (O2=20)")
 plt.scatter(gge_df_transposed["Experimental"],
             gge_df_transposed["FBA (O2=30)"],
-            label="Model v2 (O2=30)")
-plt.scatter(gge_df_transposed["Experimental"],
-            gge_df_transposed["FBA (O2=1000)"],
-            label="Model v2 (O2=1000)")
+            label="Model v2 (O2=30)"
+            )
+# Not plotting the O2=1000 data because it is an exact overlap of O2=30
+
+# Save what the bounds are for the axes
+# Get the current axis
+ax = plt.gca()
+# Get the x-axis and y-axis limits
+x_limits = ax.get_xlim()
+y_limits = ax.get_ylim()
 
 # # Add a line of best fit
 # # Calculate the coefficients for the line of best fit
@@ -100,6 +106,11 @@ plt.scatter(gge_df_transposed["Experimental"],
 x = [0, 1]
 y = [0, 1]
 plt.plot(x, y, color="red", linestyle="--", label="1:1 Line")
+
+# Reset the limits to be what they were before
+# (the automatic settings from the scatter plots without the 1:1 line)
+ax.set_xlim(x_limits)
+ax.set_ylim(y_limits)
 
 # Add labels and title
 plt.xlabel("Experimental")
