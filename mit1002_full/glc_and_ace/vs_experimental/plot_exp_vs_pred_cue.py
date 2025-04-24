@@ -76,6 +76,9 @@ bge_df_sorted = bge_df[bge_df.loc["Experimental"].sort_values().index]
 # Transpose the DataFrame to make rows into columns for easier plotting
 bge_df_transposed = bge_df_sorted.T
 
+# Set the figure size
+plt.figure(figsize=(4, 4))
+
 # Create a scatter plot of the two rows for one condition (O2=1000)
 plt.scatter(
     bge_df_transposed["Experimental"],
@@ -101,11 +104,19 @@ plt.plot(
     label=f"Best Fit (R={r_value:.2f})",
 )
 
-# Add labels and title
-plt.xlabel("Experimental")
-plt.ylabel("FBA")
+# Add legend and title
 plt.title("Scatter Plot: Experimental vs FBA")
 plt.legend()
+
+# Make axes, tick, and axis labels gray
+plt.gca().spines["top"].set_color("gray")
+plt.gca().spines["right"].set_color("gray")
+plt.gca().spines["left"].set_color("gray")
+plt.gca().spines["bottom"].set_color("gray")
+plt.gca().tick_params(axis="x", colors="gray")
+plt.gca().tick_params(axis="y", colors="gray")
+plt.xlabel("Experimental", color="gray")
+plt.ylabel("FBA", color="gray")
 
 # Save the plot
 plt.savefig(os.path.join(OUT_DIR, "exp_vs_fba.png"), dpi=300)
