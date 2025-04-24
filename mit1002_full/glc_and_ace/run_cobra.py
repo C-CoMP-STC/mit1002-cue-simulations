@@ -2,6 +2,7 @@ import os
 import pickle
 
 import cobra
+import pandas as pd
 
 # Set the output directory (where the results.pkl file will be saved)
 OUT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -116,16 +117,35 @@ for media in media_wo_o2:
         media_to_test[new_media_id] = media_wo_o2[media].copy()
         media_to_test[new_media_id]["EX_cpd00007_e0"] = o2
 
-# Loop through all the media and run FBA and pFBA and put the results in a dictionary
-cobra_results = {}
+# Define a list of P/O ratios to test
+po_ratios = [(1, 1), (2, 1), (3, 1), (4, 1), (5, 1)]
+
+# Define lists to hold the results
+res_media_name = []
+res_glucose = []
+res_acetate = []
+res_po_ratio = []
+res_fba = []
+
+# Loop through all the media
 for name, medium in media_to_test.items():
-    # Run FBA
-    alt_cobra.medium = medium
-    fba_result = alt_cobra.optimize()
-    cobra_results[name + "_fba"] = fba_result
-    # Run pFBA
-    pfba_result = cobra.flux_analysis.pfba(alt_cobra)
-    cobra_results[name + "_pfba"] = pfba_result
+    # Loop through all the P/O ratios
+    for po_ratio in po_ratios:
+        # Make a copy of the model to work with
+        working_model = alt_cobra.copy()
+        # Set the P/O ratio in the model
+        working_model.reactions.rxn08173_c0.metabolites["cpd00067_e0"] = po_ratio[0]
+        working_model.reactions.rxn08173_c0.metabolites["cpd00002_c0"] = po_ratio[1]
+        # Run FBA
+        working_model.medium = medium
+        fba_result = working_model.optimize()
+        # Save the results
+        res_media_name.append(name)
+        res_glucose.append(medium["EX_cpd00027_e0"])
+        res_acetate.append(medium["EX_cpd00029_e0"])
+        res_po_ratio.append(po_ratio)
+        res_fba.append(fba_result)
+
 
 # Save results
 with open(os.path.join(OUT_DIR, "results.pkl"), "wb") as f:
