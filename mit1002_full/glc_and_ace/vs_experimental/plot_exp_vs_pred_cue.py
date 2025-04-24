@@ -3,6 +3,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from scipy.stats import linregress
 
 FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(FILE_DIR, "plots")
@@ -62,7 +63,10 @@ bge_df.loc["FBA (O2=1000)"] = {
     "Glucose Only": fba_data.loc["Glucose Only(O2 = 1000)_fba", "bge"],
     "Acetate Only": fba_data.loc["Acetate Only(O2 = 1000)_fba", "bge"],
     "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 1000)_fba", "bge"],
-    "Acetate Heavy Mix (Early)": fba_data.loc["Acetate Heavy Mix(O2 = 1000)_fba", "bge"],
+    "Acetate Heavy Mix (Early)": fba_data.loc[
+        "Acetate Heavy Mix(O2 = 1000)_fba", "bge"
+    ],
+    "Acetate Heavy Mix (Late)": fba_data.loc["Acetate Heavy Mix(O2 = 1000)_fba", "bge"],
 }
 
 # Order the columns in increasing order (for the Experimental data)
@@ -72,45 +76,30 @@ bge_df_sorted = bge_df[bge_df.loc["Experimental"].sort_values().index]
 # Transpose the DataFrame to make rows into columns for easier plotting
 bge_df_transposed = bge_df_sorted.T
 
-# Create a scatter plot of the two rows for each of the conditions
-plt.figure(figsize=(8, 8))
-plt.plot(
+# Create a scatter plot of the two rows for one condition (O2=1000)
+plt.scatter(
     bge_df_transposed["Experimental"],
-    bge_df_transposed["FBA (O2=5)"],
-    marker="o",
-    label="Model v2 (O2=5)",
+    bge_df_transposed["FBA (O2=1000)"],
+    label="Model v2 (O2=1000)",
+    c="#60B1BE"
 )
-plt.plot(
-    bge_df_transposed["Experimental"],
-    bge_df_transposed["FBA (O2=10)"],
-    marker="o",
-    label="Model v2 (O2=10)",
-)
-plt.plot(
-    bge_df_transposed["Experimental"],
-    bge_df_transposed["FBA (O2=20)"],
-    marker="o",
-    label="Model v2 (O2=20)",
-)
-plt.plot(
-    bge_df_transposed["Experimental"],
-    bge_df_transposed["FBA (O2=30)"],
-    marker="o",
-    label="Model v2 (O2=30)",
-)
-# Not plotting the O2=1000 data because it is an exact overlap of O2=30
 
-# Save what the bounds are for the axes
-# Get the current axis
-ax = plt.gca()
-# Get the x-axis and y-axis limits
-x_limits = ax.get_xlim()
-y_limits = ax.get_ylim()
+# Perform linear regression to get the slope, intercept, and R-value
+slope, intercept, r_value, p_value, std_err = linregress(
+    bge_df_transposed["Experimental"], bge_df_transposed["FBA (O2=1000)"]
+)
 
-# Add a 1:1 line for reference
-x = [0, 1]
-y = [0, 1]
-plt.plot(x, y, color="red", linestyle="--", label="1:1 Line")
+# Calculate the line of best fit
+line_of_best_fit = slope * bge_df_transposed["Experimental"] + intercept
+
+# Add the line of best fit to the plot
+plt.plot(
+    bge_df_transposed["Experimental"],
+    line_of_best_fit,
+    color="#024064",
+    linestyle="-",
+    label=f"Best Fit (R={r_value:.2f})",
+)
 
 # Add labels and title
 plt.xlabel("Experimental")
@@ -119,13 +108,4 @@ plt.title("Scatter Plot: Experimental vs FBA")
 plt.legend()
 
 # Save the plot
-plt.savefig(os.path.join(FILE_DIR, "exp_vs_fba_full.png"), dpi=300)
-
-
-# Reset the limits to be what they were before
-# (the automatic settings from the scatter plots without the 1:1 line)
-ax.set_xlim(x_limits)
-ax.set_ylim(y_limits)
-
-# Save the plot
-plt.savefig(os.path.join(FILE_DIR, "exp_vs_fba_zoom.png"), dpi=300)
+plt.savefig(os.path.join(OUT_DIR, "exp_vs_fba.png"), dpi=300)
