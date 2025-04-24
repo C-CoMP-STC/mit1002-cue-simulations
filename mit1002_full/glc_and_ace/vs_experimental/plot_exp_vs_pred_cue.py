@@ -13,20 +13,20 @@ if not os.path.exists(OUT_DIR):
 
 # Load the experimental results
 # TODO: Recalculate the values myself from the raw data
-# For now I'll just hardcode the values with what I had on the slide I
-# presented at the all center meeting in Oct 2024, but I'm not entirely
-# sure where those values came from/if they are correct
+# For now I'll just hardcode the values with what is in the "BGE for Helen"
+# spreadsheet from Mary Ann
 # Define the columns of the dataframe to be the different conditions
 data = {
-    "Glucose Only": [0.80],
-    "Acetate Only": [0.49],
-    "Glucose Heavy Mix": [0.71],
-    "Acetate Heavy Mix": [0.62],
+    "Glucose Only": [0.78],
+    "Acetate Only": [0.66],
+    "Glucose Heavy Mix": [0.75],
+    "Acetate Heavy Mix (Early)": [0.74],
+    "Acetate Heavy Mix (Late)": [0.66],
 }
 # Convert data to a pandas DataFrame
-gge_df = pd.DataFrame(data)
+bge_df = pd.DataFrame(data)
 # Set the index of the row to be a helpful name
-gge_df.index = ["Experimental"]
+bge_df.index = ["Experimental"]
 
 # Load the FBA-predicted results
 fba_data = pd.read_csv(
@@ -34,67 +34,67 @@ fba_data = pd.read_csv(
 )
 
 # Add the FBA-predicted results to the dataframe
-gge_df.loc["FBA (O2=5)"] = {
-    "Glucose Only": fba_data.loc["Glucose Only(O2 = 5)_fba", "gge"],
-    "Acetate Only": fba_data.loc["Acetate Only(O2 = 5)_fba", "gge"],
-    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 5)_fba", "gge"],
-    "Acetate Heavy Mix": fba_data.loc["Acetate Heavy Mix(O2 = 5)_fba", "gge"],
+bge_df.loc["FBA (O2=5)"] = {
+    "Glucose Only": fba_data.loc["Glucose Only(O2 = 5)_fba", "bge"],
+    "Acetate Only": fba_data.loc["Acetate Only(O2 = 5)_fba", "bge"],
+    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 5)_fba", "bge"],
+    "Acetate Heavy Mix (Early)": fba_data.loc["Acetate Heavy Mix(O2 = 5)_fba", "bge"],
 }
-gge_df.loc["FBA (O2=10)"] = {
-    "Glucose Only": fba_data.loc["Glucose Only(O2 = 10)_fba", "gge"],
-    "Acetate Only": fba_data.loc["Acetate Only(O2 = 10)_fba", "gge"],
-    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 10)_fba", "gge"],
-    "Acetate Heavy Mix": fba_data.loc["Acetate Heavy Mix(O2 = 10)_fba", "gge"],
+bge_df.loc["FBA (O2=10)"] = {
+    "Glucose Only": fba_data.loc["Glucose Only(O2 = 10)_fba", "bge"],
+    "Acetate Only": fba_data.loc["Acetate Only(O2 = 10)_fba", "bge"],
+    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 10)_fba", "bge"],
+    "Acetate Heavy Mix (Early)": fba_data.loc["Acetate Heavy Mix(O2 = 10)_fba", "bge"],
 }
-gge_df.loc["FBA (O2=20)"] = {
-    "Glucose Only": fba_data.loc["Glucose Only(O2 = 20)_fba", "gge"],
-    "Acetate Only": fba_data.loc["Acetate Only(O2 = 20)_fba", "gge"],
-    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 20)_fba", "gge"],
-    "Acetate Heavy Mix": fba_data.loc["Acetate Heavy Mix(O2 = 20)_fba", "gge"],
+bge_df.loc["FBA (O2=20)"] = {
+    "Glucose Only": fba_data.loc["Glucose Only(O2 = 20)_fba", "bge"],
+    "Acetate Only": fba_data.loc["Acetate Only(O2 = 20)_fba", "bge"],
+    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 20)_fba", "bge"],
+    "Acetate Heavy Mix (Early)": fba_data.loc["Acetate Heavy Mix(O2 = 20)_fba", "bge"],
 }
-gge_df.loc["FBA (O2=30)"] = {
-    "Glucose Only": fba_data.loc["Glucose Only(O2 = 30)_fba", "gge"],
-    "Acetate Only": fba_data.loc["Acetate Only(O2 = 30)_fba", "gge"],
-    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 30)_fba", "gge"],
-    "Acetate Heavy Mix": fba_data.loc["Acetate Heavy Mix(O2 = 30)_fba", "gge"],
+bge_df.loc["FBA (O2=30)"] = {
+    "Glucose Only": fba_data.loc["Glucose Only(O2 = 30)_fba", "bge"],
+    "Acetate Only": fba_data.loc["Acetate Only(O2 = 30)_fba", "bge"],
+    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 30)_fba", "bge"],
+    "Acetate Heavy Mix (Early)": fba_data.loc["Acetate Heavy Mix(O2 = 30)_fba", "bge"],
 }
-gge_df.loc["FBA (O2=1000)"] = {
-    "Glucose Only": fba_data.loc["Glucose Only(O2 = 1000)_fba", "gge"],
-    "Acetate Only": fba_data.loc["Acetate Only(O2 = 1000)_fba", "gge"],
-    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 1000)_fba", "gge"],
-    "Acetate Heavy Mix": fba_data.loc["Acetate Heavy Mix(O2 = 1000)_fba", "gge"],
+bge_df.loc["FBA (O2=1000)"] = {
+    "Glucose Only": fba_data.loc["Glucose Only(O2 = 1000)_fba", "bge"],
+    "Acetate Only": fba_data.loc["Acetate Only(O2 = 1000)_fba", "bge"],
+    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 1000)_fba", "bge"],
+    "Acetate Heavy Mix (Early)": fba_data.loc["Acetate Heavy Mix(O2 = 1000)_fba", "bge"],
 }
 
 # Order the columns in increasing order (for the Experimental data)
-gge_df_sorted = gge_df[gge_df.loc['Experimental'].sort_values().index]
+bge_df_sorted = bge_df[bge_df.loc["Experimental"].sort_values().index]
 
 # Plot the predicted vs experimental
 # Transpose the DataFrame to make rows into columns for easier plotting
-gge_df_transposed = gge_df_sorted.T
+bge_df_transposed = bge_df_sorted.T
 
 # Create a scatter plot of the two rows for each of the conditions
 plt.figure(figsize=(8, 8))
 plt.plot(
-    gge_df_transposed["Experimental"],
-    gge_df_transposed["FBA (O2=5)"],
+    bge_df_transposed["Experimental"],
+    bge_df_transposed["FBA (O2=5)"],
     marker="o",
     label="Model v2 (O2=5)",
 )
 plt.plot(
-    gge_df_transposed["Experimental"],
-    gge_df_transposed["FBA (O2=10)"],
+    bge_df_transposed["Experimental"],
+    bge_df_transposed["FBA (O2=10)"],
     marker="o",
     label="Model v2 (O2=10)",
 )
 plt.plot(
-    gge_df_transposed["Experimental"],
-    gge_df_transposed["FBA (O2=20)"],
+    bge_df_transposed["Experimental"],
+    bge_df_transposed["FBA (O2=20)"],
     marker="o",
     label="Model v2 (O2=20)",
 )
 plt.plot(
-    gge_df_transposed["Experimental"],
-    gge_df_transposed["FBA (O2=30)"],
+    bge_df_transposed["Experimental"],
+    bge_df_transposed["FBA (O2=30)"],
     marker="o",
     label="Model v2 (O2=30)",
 )
