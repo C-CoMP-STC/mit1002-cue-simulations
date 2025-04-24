@@ -43,7 +43,7 @@ test_tube.set_specific_metabolite('cpd00034_e0', 1000)  # Zn2+_e0
 test_tube.set_specific_metabolite('cpd00149_e0', 1000)  # Co2+_e0
 
 # Load in the ALT model using COBRApy
-alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/mit1002-model/model.xml")
+alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/GEM-mit1002/model.xml")
 
 # use the loaded model to build a comets model
 alt = c.model(alt_cobra)
