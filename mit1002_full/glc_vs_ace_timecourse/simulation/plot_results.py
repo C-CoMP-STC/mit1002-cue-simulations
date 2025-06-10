@@ -48,3 +48,29 @@ for filename in os.listdir(RESULTS_DIR):
         # Change the y-axis to be in log scale
         ax.set_yscale("log")
         ax.figure.savefig(os.path.join(PLOTS_DIR, f"{c_source_name}_biomass_log.png"))
+
+        # Plot the biomass reaction flux
+        ax = experiment.fluxes_by_species["iHS4156"].plot(
+            x="cycle", y="bio1_biomass", title=f"Biomass Flux on {c_source_name}"
+        )
+        ax.set_ylabel("Flux (mmol/gDW/h)")
+        ax.figure.savefig(os.path.join(PLOTS_DIR, f"{c_source_name}_growth_rate.png"))
+
+        # Cut off the x-axis to only show up to the final cycle
+        ax.set_xlim(0, final_cycle)
+        # Add the final cycle as text on the plot
+        ax.text(
+            final_cycle,
+            experiment.fluxes_by_species["iHS4156"]
+            .loc[
+                experiment.fluxes_by_species["iHS4156"]["cycle"] == final_cycle,
+                "bio1_biomass",
+            ]
+            .values[0],
+            f"Final cycle: {final_cycle}",
+            horizontalalignment="right",
+            verticalalignment="bottom",
+        )
+        ax.figure.savefig(
+            os.path.join(PLOTS_DIR, f"{c_source_name}_growth_rate_cutoff.png")
+        )
