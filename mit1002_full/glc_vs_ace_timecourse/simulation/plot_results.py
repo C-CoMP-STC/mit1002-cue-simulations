@@ -39,15 +39,23 @@ for filename in os.listdir(RESULTS_DIR):
 
         # Plot the biomass over time
         ax = experiment.total_biomass.plot(x="cycle")
-
         # Shade the regions of growth in the phase cycles
         for cycle in phase_cycles:
             ax.axvspan(cycle - 0.5, cycle + 0.5, color="green", alpha=0.3)
-
         # Style the plot
         ax.set_ylabel("Biomass (g)")
         ax.set_title(f"MIT1002 Growth on {c_source_name}")
         ax.figure.savefig(os.path.join(PLOTS_DIR, f"{c_source_name}_biomass.png"))
+
+        # Plot the growth rate over time
+        ax = experiment.fluxes_by_species[model_id].plot(x="cycle", y=biomass_id)
+        # Shade the regions of growth in the phase cycles
+        for cycle in phase_cycles:
+            ax.axvspan(cycle - 0.5, cycle + 0.5, color="green", alpha=0.3)
+        # Style the plot
+        ax.set_ylabel("Growth Rate (1/h)")
+        ax.set_title(f"MIT1002 Growth Rate on {c_source_name}")
+        ax.figure.savefig(os.path.join(PLOTS_DIR, f"{c_source_name}_growth_rate.png"))
 
         # Save the list of phase cycles to a pickle file
         with open(
