@@ -6,6 +6,8 @@ RESULTS_DIR = os.path.join(FILE_DIR, "results")
 PLOTS_DIR = os.path.join(FILE_DIR, "plots")
 
 n_sigfigs = 3  # Number of digits to round the growth rate to
+model_id = "iHS4156"  # Model ID for the COMETS model
+biomass_id = "bio1_biomass"  # Biomass reaction ID in the model
 
 # Create the results and plots directories if they do not exist
 if not os.path.exists(PLOTS_DIR):
@@ -22,8 +24,8 @@ for filename in os.listdir(RESULTS_DIR):
         c_source_name = filename.split("_results.pkl")[0]
 
         # Round the growth rate to n_sigfigs
-        growth_rate_per_cycle = experiment.fluxes_by_species["iHS4156"][
-            "bio1_biomass"
+        growth_rate_per_cycle = experiment.fluxes_by_species[model_id][
+            biomass_id
         ].round(n_sigfigs)
 
         # Find the most common growth rate that is not zero
