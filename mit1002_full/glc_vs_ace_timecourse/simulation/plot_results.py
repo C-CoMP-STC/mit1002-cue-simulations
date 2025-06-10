@@ -19,8 +19,32 @@ for filename in os.listdir(RESULTS_DIR):
         # Take "_results.pkl" off the end of the filename to get the experiment name
         c_source_name = filename.split("_results.pkl")[0]
 
+        # Find the first cycle with the maximum biomass
+        max_biomass = experiment.total_biomass["iHS4156"].max()
+        final_cycle = experiment.total_biomass.loc[
+            experiment.total_biomass["iHS4156"] == max_biomass, "cycle"
+        ].values[0]
+
         # Plot the results
         ax = experiment.total_biomass.plot(x="cycle")
         ax.set_ylabel("Biomass (g)")
         ax.set_title(f"MIT1002 Growth on {c_source_name}")
         ax.figure.savefig(os.path.join(PLOTS_DIR, f"{c_source_name}_biomass.png"))
+
+        # Cut off the x-axis to only show up to the final cycle
+        ax.set_xlim(0, final_cycle)
+        # Add the final cycle as text on the plot
+        ax.text(
+            final_cycle,
+            max_biomass,
+            f"Final cycle: {final_cycle}",
+            horizontalalignment="right",
+            verticalalignment="bottom",
+        )
+        ax.figure.savefig(
+            os.path.join(PLOTS_DIR, f"{c_source_name}_biomass_cutoff.png")
+        )
+
+        # Change the y-axis to be in log scale
+        ax.set_yscale("log")
+        ax.figure.savefig(os.path.join(PLOTS_DIR, f"{c_source_name}_biomass_log.png"))
