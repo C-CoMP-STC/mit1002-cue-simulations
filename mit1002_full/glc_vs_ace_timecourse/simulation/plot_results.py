@@ -5,7 +5,7 @@ FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 RESULTS_DIR = os.path.join(FILE_DIR, "results")
 PLOTS_DIR = os.path.join(FILE_DIR, "plots")
 
-n_sigfigs = 6  # Number of digits to round the growth rate to
+n_sigfigs = 3  # Number of digits to round the growth rate to
 
 # Create the results and plots directories if they do not exist
 if not os.path.exists(PLOTS_DIR):
