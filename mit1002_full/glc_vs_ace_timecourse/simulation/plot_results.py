@@ -5,7 +5,7 @@ FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 RESULTS_DIR = os.path.join(FILE_DIR, "results")
 PLOTS_DIR = os.path.join(FILE_DIR, "plots")
 
-n_sigfigs = 3  # Number of digits to round the growth rate to
+n_sigfigs = 2  # Number of digits to round the growth rate to
 model_id = "iHS4156"  # Model ID for the COMETS model
 biomass_id = "bio1_biomass"  # Biomass reaction ID in the model
 
