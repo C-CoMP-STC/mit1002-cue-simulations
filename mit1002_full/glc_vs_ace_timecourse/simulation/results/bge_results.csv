@@ -1,0 +1,5 @@
+c_source,bge_glucose,bge_acetate
+acetate_pfba,,1.0
+glucose_pfba,1.0,0.09333822607026461
+8glucose_4acetate_pfba,1.0,1.0
+4glucose_8acetate_pfba,0.492056617878222,1.0
