@@ -10,9 +10,9 @@ model_id = "iHS4156"  # Model ID for the COMETS model
 biomass_id = "bio1_biomass"  # Biomass reaction ID in the model
 co2_id = "cpd00011_e0"  # CO2 (extracellular) metabolite ID in the model
 
-# Numbers to convert g of biomass to mmol of carbon
-biomass_c_by_weight = 0.5  # Biomass is 50% carbon by weight
-c_weight = 12.01  # g/mol
+# Load the mmol C per gram biomass conversion factor from the pickle file
+with open(os.path.join(FILE_DIR, "mmol_c_per_g_biomass.pkl"), "rb") as f:
+    mmol_c_per_g_biomass = pickle.load(f)
 
 
 def main():
@@ -71,12 +71,12 @@ def bge_across_cycle(experiment, cycles):
     # Get the starting biomass in grams
     starting_biomass_g = experiment.total_biomass.loc[cycles[0]][model_id]
     # Convert to mmol of carbon
-    starting_biomass_mmol = starting_biomass_g * biomass_c_by_weight / c_weight * 1000
+    starting_biomass_mmol = starting_biomass_g * mmol_c_per_g_biomass
 
     # Get the ending biomass in grams
     ending_biomass_g = experiment.total_biomass.loc[cycles[-1]][model_id]
     # Convert to mmol of carbon
-    ending_biomass_mmol = ending_biomass_g * biomass_c_by_weight / c_weight * 1000
+    ending_biomass_mmol = ending_biomass_g * mmol_c_per_g_biomass
 
     # Get the starting CO2
     co2_df = experiment.media[
