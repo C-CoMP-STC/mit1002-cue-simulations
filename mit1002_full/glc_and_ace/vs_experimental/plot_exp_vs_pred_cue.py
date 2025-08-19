@@ -85,6 +85,9 @@ bge_df_sorted = bge_df[bge_df.loc["Experimental"].sort_values().index]
 # Transpose the DataFrame to make rows into columns for easier plotting
 bge_df_transposed = bge_df_sorted.T
 
+# Save the transposed DataFrame to a CSV file
+bge_df_transposed.to_csv(os.path.join(OUT_DIR, "bge_exp_vs_fba.csv"))
+
 # Set the figure size
 plt.figure(figsize=(4, 4))
 
