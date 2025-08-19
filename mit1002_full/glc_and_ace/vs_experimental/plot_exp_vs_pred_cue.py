@@ -140,7 +140,7 @@ color_legend_elements = [
 ]
 legend1 = ax.legend(
     handles=color_legend_elements,
-    title="FBA Conditions",
+    title="FBA Oxygen Level",
     bbox_to_anchor=(1.05, 1),
     loc="upper left",
 )
@@ -160,7 +160,7 @@ shape_legend_elements = [
 ]
 legend2 = ax.legend(
     handles=shape_legend_elements,
-    title="Experimental Conditions",
+    title="Carbon Source(s)",
     bbox_to_anchor=(1.05, 0),
     loc="lower left",
 )
