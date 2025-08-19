@@ -42,12 +42,18 @@ bge_df.loc["FBA (O2=5)"] = {
     "Acetate 8mM, Glucose 4mM (Early)": fba_data.loc[
         "Acetate Heavy Mix(O2 = 5)_fba", "bge"
     ],
+    "Acetate 8mM, Glucose 4mM (Late)": fba_data.loc[
+        "Acetate Heavy Mix(O2 = 5)_fba", "bge"
+    ],
 }
 bge_df.loc["FBA (O2=10)"] = {
     "Glucose Only": fba_data.loc["Glucose Only(O2 = 10)_fba", "bge"],
     "Acetate Only": fba_data.loc["Acetate Only(O2 = 10)_fba", "bge"],
     "Glucose 8mM, Acetate 4mM": fba_data.loc["Glucose Heavy Mix(O2 = 10)_fba", "bge"],
     "Acetate 8mM, Glucose 4mM (Early)": fba_data.loc[
+        "Acetate Heavy Mix(O2 = 10)_fba", "bge"
+    ],
+    "Acetate 8mM, Glucose 4mM (Late)": fba_data.loc[
         "Acetate Heavy Mix(O2 = 10)_fba", "bge"
     ],
 }
@@ -58,12 +64,18 @@ bge_df.loc["FBA (O2=20)"] = {
     "Acetate 8mM, Glucose 4mM (Early)": fba_data.loc[
         "Acetate Heavy Mix(O2 = 20)_fba", "bge"
     ],
+    "Acetate 8mM, Glucose 4mM (Late)": fba_data.loc[
+        "Acetate Heavy Mix(O2 = 20)_fba", "bge"
+    ],
 }
 bge_df.loc["FBA (O2=30)"] = {
     "Glucose Only": fba_data.loc["Glucose Only(O2 = 30)_fba", "bge"],
     "Acetate Only": fba_data.loc["Acetate Only(O2 = 30)_fba", "bge"],
     "Glucose 8mM, Acetate 4mM": fba_data.loc["Glucose Heavy Mix(O2 = 30)_fba", "bge"],
     "Acetate 8mM, Glucose 4mM (Early)": fba_data.loc[
+        "Acetate Heavy Mix(O2 = 30)_fba", "bge"
+    ],
+    "Acetate 8mM, Glucose 4mM (Late)": fba_data.loc[
         "Acetate Heavy Mix(O2 = 30)_fba", "bge"
     ],
 }
