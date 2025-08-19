@@ -96,26 +96,9 @@ plt.scatter(
     c="#60B1BE",
 )
 
-# Perform linear regression to get the slope, intercept, and R-value
-slope, intercept, r_value, p_value, std_err = linregress(
-    bge_df_transposed["Experimental"], bge_df_transposed["FBA (O2=1000)"]
-)
-
-# Calculate the line of best fit
-line_of_best_fit = slope * bge_df_transposed["Experimental"] + intercept
-
-# Add the line of best fit to the plot
-plt.plot(
-    bge_df_transposed["Experimental"],
-    line_of_best_fit,
-    color="#024064",
-    linestyle="-",
-    label=f"Best Fit (R={r_value:.2f})",
-)
 
 # Add legend and title
 plt.title("Scatter Plot: Experimental vs FBA")
-plt.legend()
 
 # Make axes, tick, and axis labels gray
 plt.gca().spines["top"].set_color("gray")
