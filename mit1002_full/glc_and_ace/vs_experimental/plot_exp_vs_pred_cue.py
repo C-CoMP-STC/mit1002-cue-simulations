@@ -19,7 +19,7 @@ if not os.path.exists(OUT_DIR):
 data = {
     "Glucose Only": [0.78],
     "Acetate Only": [0.66],
-    "Glucose 4mM, Acetate 8mM": [0.75],
+    "Glucose 8mM, Acetate 4mM": [0.75],
     "Glucose 4mM, Acetate 8mM (Early)": [0.74],
     "Glucose 4mM, Acetate 8mM (Late)": [0.66],
 }
