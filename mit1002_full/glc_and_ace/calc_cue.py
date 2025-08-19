@@ -1,6 +1,5 @@
 import os
 import pickle
-import sys
 
 import cobra
 import pandas as pd
@@ -19,12 +18,16 @@ c_ex_rxns = utils.get_c_ex_rxns(model)
 with open(os.path.join(OUT_DIR, "results.pkl"), "rb") as f:
     cobra_results = pickle.load(f)
 
-# Extract the carbon fate results from the FBA results and save them in a DataFrame
-results_list = []
-for key, fba_result in cobra_results.items():
+# Extract the carbon fate results from the FBA fluxes and add them to the cobra_results DataFrame
+for index, row in cobra_results.iterrows():
+    # Extract the FBA result
+    fba_result = row["fba_result"]
+    # Add the growth rate to the DataFrame
+    growth_rate = fba_result.objective_value
+    cobra_results.at[index, "growth_rate"] = growth_rate
     # Escape if the the model isn't growing
-    if not fba_result.objective_value > 1e-6:
-        print(f"Skipping {key} because the model is not growing")
+    if not growth_rate > 1e-6:
+        print(f"Skipping row {index} because the model is not growing")
         continue
     # Extract the carbon fates for the solution (both normalized and not normalized)
     c_fates = utils.extract_c_fates_from_solution(
@@ -51,26 +54,21 @@ for key, fba_result in cobra_results.items():
     # Calculate the BGE from the c fates
     bge = biomass / (biomass + co2)
 
-    results_list.append(
-        {
-            "sim_name": key,
-            "oxygen_flux": fba_result.fluxes["EX_cpd00007_e0"],
-            "uptake": uptake,
-            "uptake_norm": 1,  # This is always 1 because the uptake is the reference
-            "co2": co2,
-            "co2_norm": co2_norm,
-            "organic_c": organic_c,
-            "organic_c_norm": organic_c_norm,
-            "biomass": biomass,
-            "biomass_norm": biomass_norm,
-            "cue": cue,
-            "gge": gge,
-            "bge": bge,
-        }
-    )
+    # Add the results to the DataFrame
+    cobra_results.at[index, "oxygen_flux"] = fba_result.fluxes["EX_cpd00007_e0"]
+    cobra_results.at[index, "uptake"] = uptake
+    cobra_results.at[index, "co2"] = co2
+    cobra_results.at[index, "organic_c"] = organic_c
+    cobra_results.at[index, "biomass"] = biomass
+    cobra_results.at[index, "co2_norm"] = co2_norm
+    cobra_results.at[index, "organic_c_norm"] = organic_c_norm
+    cobra_results.at[index, "biomass_norm"] = biomass_norm
+    cobra_results.at[index, "cue"] = cue
+    cobra_results.at[index, "gge"] = gge
+    cobra_results.at[index, "bge"] = bge
 
-# Convert the results to a DataFrame
-results = pd.DataFrame(results_list)
+# Drop the fba_result column as it's no longer needed
+cobra_results.drop(columns=["fba_result"], inplace=True)
 
 # Save the results
-results.to_csv(os.path.join(OUT_DIR, "results.csv"), index=False)
+cobra_results.to_csv(os.path.join(OUT_DIR, "results.csv"), index=False)

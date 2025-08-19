@@ -141,8 +141,8 @@ for name, medium in media_to_test.items():
         fba_result = working_model.optimize()
         # Save the results
         res_media_name.append(name)
-        res_glucose.append(medium["EX_cpd00027_e0"])
-        res_acetate.append(medium["EX_cpd00029_e0"])
+        res_glucose.append(medium.get("EX_cpd00027_e0", 0))
+        res_acetate.append(medium.get("EX_cpd00029_e0", 0))
         res_po_ratio.append(po_ratio)
         res_fba.append(fba_result)
 
