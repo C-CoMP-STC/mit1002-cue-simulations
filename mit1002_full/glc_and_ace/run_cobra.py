@@ -146,6 +146,16 @@ for name, medium in media_to_test.items():
         res_po_ratio.append(po_ratio)
         res_fba.append(fba_result)
 
+# Convert results to a DataFrame
+cobra_results = pd.DataFrame(
+    {
+        "media_name": res_media_name,
+        "glucose": res_glucose,
+        "acetate": res_acetate,
+        "po_ratio": res_po_ratio,
+        "fba_result": res_fba,
+    }
+)
 
 # Save results
 with open(os.path.join(OUT_DIR, "results.pkl"), "wb") as f:
