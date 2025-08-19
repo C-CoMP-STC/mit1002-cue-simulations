@@ -20,8 +20,8 @@ data = {
     "Glucose Only": [0.78],
     "Acetate Only": [0.66],
     "Glucose 8mM, Acetate 4mM": [0.75],
-    "Glucose 4mM, Acetate 8mM (Early)": [0.74],
-    "Glucose 4mM, Acetate 8mM (Late)": [0.66],
+    "Acetate 8mM, Glucose 4mM (Early)": [0.74],
+    "Acetate 8mM, Glucose 4mM (Late)": [0.66],
 }
 # Convert data to a pandas DataFrame
 bge_df = pd.DataFrame(data)
