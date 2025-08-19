@@ -1,8 +1,9 @@
 import os
 
+import matplotlib.lines as mlines
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
-from scipy.stats import linregress
 
 FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(FILE_DIR, "plots")
@@ -88,17 +89,84 @@ bge_df_transposed = bge_df_sorted.T
 # Save the transposed DataFrame to a CSV file
 bge_df_transposed.to_csv(os.path.join(OUT_DIR, "bge_exp_vs_fba.csv"))
 
-# Set the figure size
-plt.figure(figsize=(4, 4))
+# Define mappings for shapes and colors
+# Get unique conditions from the index
+conditions = bge_df_transposed.index.unique()
+markers = ["o", "s", "^", "D", "v", "P", "*", "X"]
+shape_map = {
+    condition: markers[i % len(markers)] for i, condition in enumerate(conditions)
+}
 
-# Create a scatter plot of the two rows for one condition (O2=1000)
-plt.scatter(
-    bge_df_transposed["Experimental"],
-    bge_df_transposed["FBA (O2=1000)"],
-    label="Model v2 (O2=1000)",
-    c="#60B1BE",
+# Get unique FBA columns
+fba_cols = [col for col in bge_df_transposed.columns if col.startswith("FBA")]
+colors = plt.cm.viridis(np.linspace(0, 1, len(fba_cols)))
+color_map = {col: colors[i] for i, col in enumerate(fba_cols)}
+
+# Create the plot
+fig, ax = plt.subplots(figsize=(12, 8))
+
+# Plot each point with the corresponding shape and color
+for fba_col in fba_cols:
+    for condition in bge_df_transposed.index:
+        x = bge_df_transposed.loc[condition, "Experimental"]
+        y = bge_df_transposed.loc[condition, fba_col]
+
+        # Only plot if the y-value is not NaN
+        if pd.notna(y):
+            ax.scatter(
+                x,
+                y,
+                color=color_map[fba_col],
+                marker=shape_map[condition],
+                s=100,  # Set marker size
+                alpha=0.8,
+                edgecolors="k",
+                linewidths=0.5,
+            )
+
+# Create custom legends
+# For colors (FBA conditions)
+color_legend_elements = [
+    mlines.Line2D(
+        [0],
+        [0],
+        color=color_map[col],
+        marker="o",
+        linestyle="None",
+        markersize=8,
+        label=col,
+    )
+    for col in fba_cols
+]
+legend1 = ax.legend(
+    handles=color_legend_elements,
+    title="FBA Conditions",
+    bbox_to_anchor=(1.05, 1),
+    loc="upper left",
 )
 
+# For shapes (Experimental conditions)
+shape_legend_elements = [
+    mlines.Line2D(
+        [0],
+        [0],
+        color="gray",
+        marker=shape_map[cond],
+        linestyle="None",
+        markersize=8,
+        label=cond,
+    )
+    for cond in conditions
+]
+legend2 = ax.legend(
+    handles=shape_legend_elements,
+    title="Experimental Conditions",
+    bbox_to_anchor=(1.05, 0),
+    loc="lower left",
+)
+
+# Add the first legend back to the plot
+ax.add_artist(legend1)
 
 # Add legend and title
 plt.title("Scatter Plot: Experimental vs FBA")
