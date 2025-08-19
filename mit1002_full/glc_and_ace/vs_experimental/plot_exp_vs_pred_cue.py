@@ -124,6 +124,18 @@ for fba_col in fba_cols:
                 linewidths=0.5,
             )
 
+# Plot a diagonal line for reference
+min_value = min(bge_df_transposed.values.flatten())
+max_value = max(bge_df_transposed.values.flatten())
+ax.plot(
+    [min_value, max_value],
+    [min_value, max_value],
+    color="gray",
+    linestyle="--",
+    linewidth=1,
+    label="1:1 Line",
+)
+
 # Create custom legends
 # For colors (FBA conditions)
 color_legend_elements = [
