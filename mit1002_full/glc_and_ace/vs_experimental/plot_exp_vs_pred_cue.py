@@ -1,7 +1,6 @@
 import os
 
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
 from scipy.stats import linregress
 
@@ -20,9 +19,9 @@ if not os.path.exists(OUT_DIR):
 data = {
     "Glucose Only": [0.78],
     "Acetate Only": [0.66],
-    "Glucose Heavy Mix": [0.75],
-    "Acetate Heavy Mix (Early)": [0.74],
-    "Acetate Heavy Mix (Late)": [0.66],
+    "Glucose 4mM, Acetate 8mM": [0.75],
+    "Glucose 4mM, Acetate 8mM (Early)": [0.74],
+    "Glucose 4mM, Acetate 8mM (Late)": [0.66],
 }
 # Convert data to a pandas DataFrame
 bge_df = pd.DataFrame(data)
@@ -38,35 +37,45 @@ fba_data = pd.read_csv(
 bge_df.loc["FBA (O2=5)"] = {
     "Glucose Only": fba_data.loc["Glucose Only(O2 = 5)_fba", "bge"],
     "Acetate Only": fba_data.loc["Acetate Only(O2 = 5)_fba", "bge"],
-    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 5)_fba", "bge"],
-    "Acetate Heavy Mix (Early)": fba_data.loc["Acetate Heavy Mix(O2 = 5)_fba", "bge"],
+    "Glucose 4mM, Acetate 8mM": fba_data.loc["Glucose Heavy Mix(O2 = 5)_fba", "bge"],
+    "Glucose 4mM, Acetate 8mM (Early)": fba_data.loc[
+        "Acetate Heavy Mix(O2 = 5)_fba", "bge"
+    ],
 }
 bge_df.loc["FBA (O2=10)"] = {
     "Glucose Only": fba_data.loc["Glucose Only(O2 = 10)_fba", "bge"],
     "Acetate Only": fba_data.loc["Acetate Only(O2 = 10)_fba", "bge"],
-    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 10)_fba", "bge"],
-    "Acetate Heavy Mix (Early)": fba_data.loc["Acetate Heavy Mix(O2 = 10)_fba", "bge"],
+    "Glucose 4mM, Acetate 8mM": fba_data.loc["Glucose Heavy Mix(O2 = 10)_fba", "bge"],
+    "Glucose 4mM, Acetate 8mM (Early)": fba_data.loc[
+        "Acetate Heavy Mix(O2 = 10)_fba", "bge"
+    ],
 }
 bge_df.loc["FBA (O2=20)"] = {
     "Glucose Only": fba_data.loc["Glucose Only(O2 = 20)_fba", "bge"],
     "Acetate Only": fba_data.loc["Acetate Only(O2 = 20)_fba", "bge"],
-    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 20)_fba", "bge"],
-    "Acetate Heavy Mix (Early)": fba_data.loc["Acetate Heavy Mix(O2 = 20)_fba", "bge"],
+    "Glucose 4mM, Acetate 8mM": fba_data.loc["Glucose Heavy Mix(O2 = 20)_fba", "bge"],
+    "Glucose 4mM, Acetate 8mM (Early)": fba_data.loc[
+        "Acetate Heavy Mix(O2 = 20)_fba", "bge"
+    ],
 }
 bge_df.loc["FBA (O2=30)"] = {
     "Glucose Only": fba_data.loc["Glucose Only(O2 = 30)_fba", "bge"],
     "Acetate Only": fba_data.loc["Acetate Only(O2 = 30)_fba", "bge"],
-    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 30)_fba", "bge"],
-    "Acetate Heavy Mix (Early)": fba_data.loc["Acetate Heavy Mix(O2 = 30)_fba", "bge"],
+    "Glucose 4mM, Acetate 8mM": fba_data.loc["Glucose Heavy Mix(O2 = 30)_fba", "bge"],
+    "Glucose 4mM, Acetate 8mM (Early)": fba_data.loc[
+        "Acetate Heavy Mix(O2 = 30)_fba", "bge"
+    ],
 }
 bge_df.loc["FBA (O2=1000)"] = {
     "Glucose Only": fba_data.loc["Glucose Only(O2 = 1000)_fba", "bge"],
     "Acetate Only": fba_data.loc["Acetate Only(O2 = 1000)_fba", "bge"],
-    "Glucose Heavy Mix": fba_data.loc["Glucose Heavy Mix(O2 = 1000)_fba", "bge"],
-    "Acetate Heavy Mix (Early)": fba_data.loc[
+    "Glucose 4mM, Acetate 8mM": fba_data.loc["Glucose Heavy Mix(O2 = 1000)_fba", "bge"],
+    "Glucose 4mM, Acetate 8mM (Early)": fba_data.loc[
         "Acetate Heavy Mix(O2 = 1000)_fba", "bge"
     ],
-    "Acetate Heavy Mix (Late)": fba_data.loc["Acetate Heavy Mix(O2 = 1000)_fba", "bge"],
+    "Glucose 4mM, Acetate 8mM (Late)": fba_data.loc[
+        "Acetate Heavy Mix(O2 = 1000)_fba", "bge"
+    ],
 }
 
 # Order the columns in increasing order (for the Experimental data)
@@ -84,7 +93,7 @@ plt.scatter(
     bge_df_transposed["Experimental"],
     bge_df_transposed["FBA (O2=1000)"],
     label="Model v2 (O2=1000)",
-    c="#60B1BE"
+    c="#60B1BE",
 )
 
 # Perform linear regression to get the slope, intercept, and R-value
@@ -115,8 +124,8 @@ plt.gca().spines["left"].set_color("gray")
 plt.gca().spines["bottom"].set_color("gray")
 plt.gca().tick_params(axis="x", colors="gray")
 plt.gca().tick_params(axis="y", colors="gray")
-plt.xlabel("Experimental", color="gray")
-plt.ylabel("FBA", color="gray")
+plt.xlabel("Experimental BGE", color="gray")
+plt.ylabel("FBA Predicted BGE", color="gray")
 
 # Save the plot
-plt.savefig(os.path.join(OUT_DIR, "exp_vs_fba.png"), dpi=300)
+plt.savefig(os.path.join(OUT_DIR, "exp_vs_fba.png"), dpi=300, bbox_inches="tight")
