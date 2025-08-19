@@ -105,8 +105,8 @@ ace_heavy_mix_medium = {
 media_wo_o2 = {
     "Glucose Only": glc_medium,
     "Acetate Only": ace_medium,
-    "Glucose Heavy Mix": glc_heavy_mix_medium,
-    "Acetate Heavy Mix": ace_heavy_mix_medium,
+    "Glucose 8mM, Acetate 4mM": glc_heavy_mix_medium,
+    "Acetate 8mM, Glucose 4mM": ace_heavy_mix_medium,
 }
 
 media_to_test = {}
