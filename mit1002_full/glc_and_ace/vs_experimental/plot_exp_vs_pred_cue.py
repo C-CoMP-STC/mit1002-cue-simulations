@@ -30,9 +30,10 @@ bge_df = pd.DataFrame(data)
 bge_df.index = ["Experimental"]
 
 # Load the FBA-predicted results
-fba_data = pd.read_csv(
-    os.path.join(os.path.dirname(FILE_DIR), "results.csv"), index_col=0, header=0
-)
+fba_data = pd.read_csv(os.path.join(os.path.dirname(FILE_DIR), "results.csv"), header=0)
+
+# Filter the FBA data to only keep rows where "po_ratio" is "(4,1)"
+fba_data = fba_data[fba_data["po_ratio"] == "(4, 1)"]
 
 # Add the FBA-predicted results to the dataframe
 bge_df.loc["FBA (O2=5)"] = {
