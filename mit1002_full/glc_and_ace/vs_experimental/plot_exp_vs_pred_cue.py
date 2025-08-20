@@ -37,59 +37,100 @@ fba_data = fba_data[fba_data["po_ratio"] == "(4, 1)"]
 
 # Add the FBA-predicted results to the dataframe
 bge_df.loc["FBA (O2=5)"] = {
-    "Glucose Only": fba_data.loc["Glucose Only(O2 = 5)_fba", "bge"],
-    "Acetate Only": fba_data.loc["Acetate Only(O2 = 5)_fba", "bge"],
-    "Glucose 8mM, Acetate 4mM": fba_data.loc["Glucose Heavy Mix(O2 = 5)_fba", "bge"],
-    "Acetate 8mM, Glucose 4mM (Early)": fba_data.loc[
-        "Acetate Heavy Mix(O2 = 5)_fba", "bge"
-    ],
-    "Acetate 8mM, Glucose 4mM (Late)": fba_data.loc[
-        "Acetate Heavy Mix(O2 = 5)_fba", "bge"
-    ],
+    "Glucose Only": fba_data[
+        (fba_data["media_name"] == "Glucose Only") & (fba_data["o2"] == 5)
+    ]["bge"].iloc[0],
+    "Acetate Only": fba_data[
+        (fba_data["media_name"] == "Acetate Only") & (fba_data["o2"] == 5)
+    ]["bge"].iloc[0],
+    "Glucose 8mM, Acetate 4mM": fba_data[
+        (fba_data["media_name"] == "Glucose 8mM, Acetate 4mM") & (fba_data["o2"] == 5)
+    ]["bge"].iloc[0],
+    "Acetate 8mM, Glucose 4mM (Early)": fba_data[
+        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM")
+        & (fba_data["o2"] == 5)
+    ]["bge"].iloc[0],
+    "Acetate 8mM, Glucose 4mM (Late)": fba_data[
+        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM")
+        & (fba_data["o2"] == 5)
+    ]["bge"].iloc[0],
 }
 bge_df.loc["FBA (O2=10)"] = {
-    "Glucose Only": fba_data.loc["Glucose Only(O2 = 10)_fba", "bge"],
-    "Acetate Only": fba_data.loc["Acetate Only(O2 = 10)_fba", "bge"],
-    "Glucose 8mM, Acetate 4mM": fba_data.loc["Glucose Heavy Mix(O2 = 10)_fba", "bge"],
-    "Acetate 8mM, Glucose 4mM (Early)": fba_data.loc[
-        "Acetate Heavy Mix(O2 = 10)_fba", "bge"
-    ],
-    "Acetate 8mM, Glucose 4mM (Late)": fba_data.loc[
-        "Acetate Heavy Mix(O2 = 10)_fba", "bge"
-    ],
+    "Glucose Only": fba_data[
+        (fba_data["media_name"] == "Glucose Only") & (fba_data["o2"] == 10)
+    ]["bge"].iloc[0],
+    "Acetate Only": fba_data[
+        (fba_data["media_name"] == "Acetate Only") & (fba_data["o2"] == 10)
+    ]["bge"].iloc[0],
+    "Glucose 8mM, Acetate 4mM": fba_data[
+        (fba_data["media_name"] == "Glucose 8mM, Acetate 4mM") & (fba_data["o2"] == 10)
+    ]["bge"].iloc[0],
+    "Acetate 8mM, Glucose 4mM (Early)": fba_data[
+        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM")
+        & (fba_data["o2"] == 10)
+    ]["bge"].iloc[0],
+    "Acetate 8mM, Glucose 4mM (Late)": fba_data[
+        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM")
+        & (fba_data["o2"] == 10)
+    ]["bge"].iloc[0],
 }
 bge_df.loc["FBA (O2=20)"] = {
-    "Glucose Only": fba_data.loc["Glucose Only(O2 = 20)_fba", "bge"],
-    "Acetate Only": fba_data.loc["Acetate Only(O2 = 20)_fba", "bge"],
-    "Glucose 8mM, Acetate 4mM": fba_data.loc["Glucose Heavy Mix(O2 = 20)_fba", "bge"],
-    "Acetate 8mM, Glucose 4mM (Early)": fba_data.loc[
-        "Acetate Heavy Mix(O2 = 20)_fba", "bge"
-    ],
-    "Acetate 8mM, Glucose 4mM (Late)": fba_data.loc[
-        "Acetate Heavy Mix(O2 = 20)_fba", "bge"
-    ],
+    "Glucose Only": fba_data[
+        (fba_data["media_name"] == "Glucose Only") & (fba_data["o2"] == 20)
+    ]["bge"].iloc[0],
+    "Acetate Only": fba_data[
+        (fba_data["media_name"] == "Acetate Only") & (fba_data["o2"] == 20)
+    ]["bge"].iloc[0],
+    "Glucose 8mM, Acetate 4mM": fba_data[
+        (fba_data["media_name"] == "Glucose 8mM, Acetate 4mM") & (fba_data["o2"] == 20)
+    ]["bge"].iloc[0],
+    "Acetate 8mM, Glucose 4mM (Early)": fba_data[
+        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM")
+        & (fba_data["o2"] == 20)
+    ]["bge"].iloc[0],
+    "Acetate 8mM, Glucose 4mM (Late)": fba_data[
+        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM")
+        & (fba_data["o2"] == 20)
+    ]["bge"].iloc[0],
 }
 bge_df.loc["FBA (O2=30)"] = {
-    "Glucose Only": fba_data.loc["Glucose Only(O2 = 30)_fba", "bge"],
-    "Acetate Only": fba_data.loc["Acetate Only(O2 = 30)_fba", "bge"],
-    "Glucose 8mM, Acetate 4mM": fba_data.loc["Glucose Heavy Mix(O2 = 30)_fba", "bge"],
-    "Acetate 8mM, Glucose 4mM (Early)": fba_data.loc[
-        "Acetate Heavy Mix(O2 = 30)_fba", "bge"
-    ],
-    "Acetate 8mM, Glucose 4mM (Late)": fba_data.loc[
-        "Acetate Heavy Mix(O2 = 30)_fba", "bge"
-    ],
+    "Glucose Only": fba_data[
+        (fba_data["media_name"] == "Glucose Only") & (fba_data["o2"] == 30)
+    ]["bge"].iloc[0],
+    "Acetate Only": fba_data[
+        (fba_data["media_name"] == "Acetate Only") & (fba_data["o2"] == 30)
+    ]["bge"].iloc[0],
+    "Glucose 8mM, Acetate 4mM": fba_data[
+        (fba_data["media_name"] == "Glucose 8mM, Acetate 4mM") & (fba_data["o2"] == 30)
+    ]["bge"].iloc[0],
+    "Acetate 8mM, Glucose 4mM (Early)": fba_data[
+        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM")
+        & (fba_data["o2"] == 30)
+    ]["bge"].iloc[0],
+    "Acetate 8mM, Glucose 4mM (Late)": fba_data[
+        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM")
+        & (fba_data["o2"] == 30)
+    ]["bge"].iloc[0],
 }
 bge_df.loc["FBA (O2=1000)"] = {
-    "Glucose Only": fba_data.loc["Glucose Only(O2 = 1000)_fba", "bge"],
-    "Acetate Only": fba_data.loc["Acetate Only(O2 = 1000)_fba", "bge"],
-    "Glucose 8mM, Acetate 4mM": fba_data.loc["Glucose Heavy Mix(O2 = 1000)_fba", "bge"],
-    "Acetate 8mM, Glucose 4mM (Early)": fba_data.loc[
-        "Acetate Heavy Mix(O2 = 1000)_fba", "bge"
-    ],
-    "Acetate 8mM, Glucose 4mM (Late)": fba_data.loc[
-        "Acetate Heavy Mix(O2 = 1000)_fba", "bge"
-    ],
+    "Glucose Only": fba_data[
+        (fba_data["media_name"] == "Glucose Only") & (fba_data["o2"] == 1000)
+    ]["bge"].iloc[0],
+    "Acetate Only": fba_data[
+        (fba_data["media_name"] == "Acetate Only") & (fba_data["o2"] == 1000)
+    ]["bge"].iloc[0],
+    "Glucose 8mM, Acetate 4mM": fba_data[
+        (fba_data["media_name"] == "Glucose 8mM, Acetate 4mM")
+        & (fba_data["o2"] == 1000)
+    ]["bge"].iloc[0],
+    "Acetate 8mM, Glucose 4mM (Early)": fba_data[
+        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM")
+        & (fba_data["o2"] == 1000)
+    ]["bge"].iloc[0],
+    "Acetate 8mM, Glucose 4mM (Late)": fba_data[
+        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM")
+        & (fba_data["o2"] == 1000)
+    ]["bge"].iloc[0],
 }
 
 # Order the columns in increasing order (for the Experimental data)
