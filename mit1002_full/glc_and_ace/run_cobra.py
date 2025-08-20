@@ -10,7 +10,11 @@ OUT_DIR = os.path.dirname(os.path.realpath(__file__))
 # Load in the ALT model using COBRApy
 alt_cobra = cobra.io.read_sbml_model("../../GEM-repos/GEM-mit1002/model.xml")
 
+# Define a list of O2 levels to test
 o2_values = [0, 5, 10, 20, 30, 1000]
+
+# Define a list of P/O ratios to test
+po_ratios = [(1, 1), (2, 1), (3, 1), (4, 1), (5, 1)]
 
 # Make a medium with just glucose
 # TODO: Use an uptake rate based on the NMR data
@@ -109,47 +113,49 @@ media_wo_o2 = {
     "Acetate 8mM, Glucose 4mM": ace_heavy_mix_medium,
 }
 
-media_to_test = {}
-# Make media with different O2 levels
-for media in media_wo_o2:
-    for o2 in o2_values:
-        new_media_id = media + "(O2 = " + str(o2) + ")"
-        media_to_test[new_media_id] = media_wo_o2[media].copy()
-        media_to_test[new_media_id]["EX_cpd00007_e0"] = o2
-
-# Define a list of P/O ratios to test
-po_ratios = [(1, 1), (2, 1), (3, 1), (4, 1), (5, 1)]
-
 # Define lists to hold the results
 res_media_name = []
 res_glucose = []
 res_acetate = []
+res_o2 = []
 res_po_ratio = []
 res_fba = []
 
 # Loop through all the media
-for name, medium in media_to_test.items():
-    # Loop through all the P/O ratios
-    for po_ratio in po_ratios:
+for name, medium in media_wo_o2.items():
+    for o2 in o2_values:
+        # Set the O2 level in the medium
+        medium["EX_cpd00007_e0"] = o2  # O2_e0
         # Make a copy of the model to work with
-        working_model = alt_cobra.copy()
-        # Set the P/O ratio in the model
-        working_model.reactions.rxn08173_c0.metabolites["cpd00067_e0"] = po_ratio[0]
-        working_model.reactions.rxn08173_c0.metabolites["cpd00002_c0"] = po_ratio[1]
-        # Run FBA
-        working_model.medium = medium
-        fba_result = working_model.optimize()
-        # Save the results
-        res_media_name.append(name)
-        res_glucose.append(medium.get("EX_cpd00027_e0", 0))
-        res_acetate.append(medium.get("EX_cpd00029_e0", 0))
-        res_po_ratio.append(po_ratio)
-        res_fba.append(fba_result)
+        o2_working_model = alt_cobra.copy()
+        # Set the medium in the model
+        o2_working_model.medium = medium
+        # Loop through all the P/O ratios
+        for po_ratio in po_ratios:
+            # Make a copy of the model to work with
+            po_working_model = o2_working_model.copy()
+            # Set the P/O ratio in the model
+            po_working_model.reactions.rxn08173_c0.metabolites["cpd00067_e0"] = (
+                po_ratio[0]
+            )
+            po_working_model.reactions.rxn08173_c0.metabolites["cpd00002_c0"] = (
+                po_ratio[1]
+            )
+            # Run FBA
+            fba_result = po_working_model.optimize()
+            # Save the results
+            res_media_name.append(name)
+            res_glucose.append(po_working_model.medium.get("EX_cpd00027_e0", 0))
+            res_acetate.append(po_working_model.medium.get("EX_cpd00029_e0", 0))
+            res_o2.append(o2)
+            res_po_ratio.append(po_ratio)
+            res_fba.append(fba_result)
 
 # Convert results to a DataFrame
 cobra_results = pd.DataFrame(
     {
         "media_name": res_media_name,
+        "o2": res_o2,
         "glucose": res_glucose,
         "acetate": res_acetate,
         "po_ratio": res_po_ratio,
