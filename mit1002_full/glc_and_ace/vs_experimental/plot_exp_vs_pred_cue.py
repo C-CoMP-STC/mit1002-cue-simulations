@@ -1,9 +1,16 @@
 import os
+import sys
 
 import matplotlib.lines as mlines
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+# Import the plot styles (has global variables for colors)
+sys.path.append(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
+)
+from plot_styles import *
 
 FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(FILE_DIR, "plots")
@@ -36,23 +43,6 @@ fba_data = pd.read_csv(os.path.join(os.path.dirname(FILE_DIR), "results.csv"), h
 fba_data = fba_data[fba_data["po_ratio"] == "(4, 1)"]
 
 # Add the FBA-predicted results to the dataframe
-bge_df.loc["FBA (O2=5)"] = {
-    "Glucose Only": fba_data[
-        (fba_data["media_name"] == "Glucose Only") & (fba_data["o2"] == 5)
-    ]["bge"].iloc[0],
-    "Acetate Only": fba_data[
-        (fba_data["media_name"] == "Acetate Only") & (fba_data["o2"] == 5)
-    ]["bge"].iloc[0],
-    "Glucose 8mM, Acetate 4mM": fba_data[
-        (fba_data["media_name"] == "Glucose 8mM, Acetate 4mM") & (fba_data["o2"] == 5)
-    ]["bge"].iloc[0],
-    "Acetate 8mM, Glucose 4mM (Early)": fba_data[
-        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM") & (fba_data["o2"] == 5)
-    ]["bge"].iloc[0],
-    "Acetate 8mM, Glucose 4mM (Late)": fba_data[
-        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM") & (fba_data["o2"] == 5)
-    ]["bge"].iloc[0],
-}
 bge_df.loc["FBA (O2=10)"] = {
     "Glucose Only": fba_data[
         (fba_data["media_name"] == "Glucose Only") & (fba_data["o2"] == 10)
@@ -104,26 +94,6 @@ bge_df.loc["FBA (O2=30)"] = {
         (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM") & (fba_data["o2"] == 30)
     ]["bge"].iloc[0],
 }
-bge_df.loc["FBA (O2=1000)"] = {
-    "Glucose Only": fba_data[
-        (fba_data["media_name"] == "Glucose Only") & (fba_data["o2"] == 1000)
-    ]["bge"].iloc[0],
-    "Acetate Only": fba_data[
-        (fba_data["media_name"] == "Acetate Only") & (fba_data["o2"] == 1000)
-    ]["bge"].iloc[0],
-    "Glucose 8mM, Acetate 4mM": fba_data[
-        (fba_data["media_name"] == "Glucose 8mM, Acetate 4mM")
-        & (fba_data["o2"] == 1000)
-    ]["bge"].iloc[0],
-    "Acetate 8mM, Glucose 4mM (Early)": fba_data[
-        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM")
-        & (fba_data["o2"] == 1000)
-    ]["bge"].iloc[0],
-    "Acetate 8mM, Glucose 4mM (Late)": fba_data[
-        (fba_data["media_name"] == "Acetate 8mM, Glucose 4mM")
-        & (fba_data["o2"] == 1000)
-    ]["bge"].iloc[0],
-}
 
 # Order the columns in increasing order (for the Experimental data)
 bge_df_sorted = bge_df[bge_df.loc["Experimental"].sort_values().index]
@@ -145,7 +115,7 @@ shape_map = {
 
 # Get unique FBA columns
 fba_cols = [col for col in bge_df_transposed.columns if col.startswith("FBA")]
-colors = plt.cm.viridis(np.linspace(0, 1, len(fba_cols)))
+colors = [DARK_BLUE, ORANGE, LIGHT_BLUE]
 color_map = {col: colors[i] for i, col in enumerate(fba_cols)}
 
 # Create the plot
