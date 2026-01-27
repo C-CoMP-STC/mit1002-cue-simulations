@@ -119,7 +119,7 @@ colors = [DARK_BLUE, ORANGE, LIGHT_BLUE]
 color_map = {col: colors[i] for i, col in enumerate(fba_cols)}
 
 # Create the plot
-fig, ax = plt.subplots(figsize=(12, 8))
+fig, ax = plt.subplots(figsize=(6, 6))
 
 # Plot each point with the corresponding shape and color
 for fba_col in fba_cols:
@@ -141,8 +141,8 @@ for fba_col in fba_cols:
             )
 
 # Plot a diagonal line for reference
-min_value = min(bge_df_transposed.values.flatten())
-max_value = max(bge_df_transposed.values.flatten())
+min_value = 0
+max_value = 1
 ax.plot(
     [min_value, max_value],
     [min_value, max_value],
